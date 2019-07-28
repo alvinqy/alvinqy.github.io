@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="KNN的英文叫K-Nearest Neighbor，应该算是数据挖掘算法中最简单的一种。
+我们先用一个例子体会下。
+假设，我们想对电影的类型进行分类，统计了电影中打斗次数、接吻次数，当然还有其他的指标也可以被统计到，如下表所示。
+
+
+
+电影名称
+打斗次数
+接吻次数
+······
+电影类型
+
+
+
+《战">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="John Doe">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="KNN：如何根据打斗和接吻次数来划分电影类型">
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Hexo">
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article">
+    
+
+    <!--Page Cover-->
+    
+
+    <meta name="twitter:card" content="summary">
+    
+
+    <!-- Title -->
+    
+    <title>KNN：如何根据打斗和接吻次数来划分电影类型 - Hexo</title>
+
+    <!-- Tachyons Core CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/tachyons/css/tachyons.min.css">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Google Analytics -->
+    
+
+
+</head>
+
+
+<body>
+
+<!-- Main Content -->
+<!-- Banner -->
+<!-- Banner -->
+<div class="w-100 bg-1 ph5-ns ph3 text-light">
+    
+    <nav class="db dt-l w-100 mw8 center border-box pv3">
+        <a class="db dtc-l v-mid link dim w-100 w-25-l tc tl-l mb2 mb0-l white" href="/" title="Hexo">
+            <img src="http://www.codeblocq.com/assets/projects/hexo-theme-anodyne/assets/anodyne.svg" class="dib h3" alt="Hexo">
+        </a>
+        <div class="db dtc-l v-mid w-100 w-75-l tc tr-l">
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/" 
+                    title="Home">
+                    Home
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/archives" 
+                    title="Archives">
+                    Archives
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/tags" 
+                    title="Tags">
+                    Tags
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/categories" 
+                    title="Categories">
+                    Categories
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/about.html" 
+                    title="About">
+                    About
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/contact.html" 
+                    title="Contact">
+                    Contact
+                </a>
+            
+        </div>
+    </nav>
+
+    <!-- Title -->
+    <div class="w-100 mw8 center vh-40 dt">
+        <div class="dtc v-mid white">
+            <h1 class="f1-l f2-m tc tc-m tl-ns">KNN：如何根据打斗和接吻次数来划分电影类型</h1>
+            <p class="f4 fw3 pab-100px tc tc-m tl-ns">2018-03-19</p>
+        </div>
+    </div>
+
+    <!-- Icon -->
+    <div class="relative w-100 mw8 center white dn dn-m db-ns">
+        <i class="header-icon fa fa-file-text-o"></i>
+    </div>
+</div>
+
+<!-- Content -->
+<div class="w-100 ph2 ph4-m ph5-l mv5 mv6-l">
+    <div class="content">
+        <div class="mw8 center">
+            <div class="cf">
+                <div class="fl w-100 w-70-l mw7 left fw3 lh-copy pr4-ns pr0-m post-content">
+                    <!-- Tags Vertical -->
+                    
+
+                    <!-- Main Post Content -->
+                    <p>KNN的英文叫K-Nearest Neighbor，应该算是数据挖掘算法中最简单的一种。</p>
+<p>我们先用一个例子体会下。</p>
+<p>假设，我们想对电影的类型进行分类，统计了电影中打斗次数、接吻次数，当然还有其他的指标也可以被统计到，如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th>电影名称</th>
+<th>打斗次数</th>
+<th>接吻次数</th>
+<th>······</th>
+<th>电影类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>《战狼》</td>
+<td>100</td>
+<td>5</td>
+<td>······</td>
+<td>动作</td>
+</tr>
+<tr>
+<td>《红海行动》</td>
+<td>95</td>
+<td>3</td>
+<td>······</td>
+<td>动作</td>
+</tr>
+<tr>
+<td>《碟中谍6》</td>
+<td>105</td>
+<td>31</td>
+<td>······</td>
+<td>动作</td>
+</tr>
+<tr>
+<td>《前任3》</td>
+<td>2</td>
+<td>59</td>
+<td>······</td>
+<td>爱情</td>
+</tr>
+<tr>
+<td>《春娇救志明》</td>
+<td>3</td>
+<td>60</td>
+<td>······</td>
+<td>爱情</td>
+</tr>
+<tr>
+<td>《泰坦尼克号》</td>
+<td>10</td>
+<td>80</td>
+<td></td>
+<td>爱情</td>
+</tr>
+</tbody></table>
+<p>我们很容易理解《战狼》《红海行动》《碟中谍6》是动作片，《前任3》《春娇救志明》《泰坦尼克号》是爱情片，但是有没有一种方法让机器也可以掌握这个分类的规则，当有一部新电影的时候，也可以对它的类型自动分类呢？</p>
+<h2 id="KNN的工作原理"><a href="#KNN的工作原理" class="headerlink" title="KNN的工作原理"></a>KNN的工作原理</h2><p>“近朱者赤，近墨者黑”可以说是KNN的工作原理。整个计算过程分为三步：</p>
+<ol>
+<li>计算待分类物体与其他物体之间的距离；</li>
+<li>统计距离最近的K个邻居；</li>
+<li>对于K个最近的邻居，它们属于哪个分类最多，待分类物体就属于哪一类。</li>
+</ol>
+<p><strong>K值如何选择</strong></p>
+<p>你能看出整个KNN的分类过程，K值的选择还是很重要的。那么问题来了，K值选择多少是适合的呢？</p>
+<p>如果 K 值比较小，就相当于未分类物体与它的邻居非常接近才行。这样产生的一个问题就是，如果邻居点是个噪声点，那么未分类物体的分类也会产生误差，这样KNN分类就会产生过拟合。</p>
+<p>如果K值比较大，相当于距离过远的点也会对未知物体的分类产生影响，虽然这种情况的好处是鲁棒性强，但是不足也很明显，会产生欠拟合情况，也就是没有把未分类物体真正分类出来。</p>
+<p>所以K值应该是个实践出来的结果，并不是我们事先而定的。在工程上，我们一般采用交叉验证的方式选取 K 值。</p>
+<p>交叉验证的思路就是，把样本集中的大部分样本作为训练集，剩余的小部分样本用于预测，来验证分类模型的准确性。所以在KNN算法中，我们一般会把K值选取在较小的范围内，同时在验证集上准确率最高的那一个最终确定作为K值。</p>
+<p><strong>距离如何计算</strong></p>
+<p>在KNN算法中，还有一个重要的计算就是关于距离的度量。两个样本点之间的距离代表了这两个样本之间的相似度。距离越大，差异性越大；距离越小，相似度越大。</p>
+<p>关于距离的计算方式有下面五种方式：</p>
+<ol>
+<li>欧氏距离；</li>
+<li>曼哈顿距离；</li>
+<li>闵可夫斯基距离；</li>
+<li>切比雪夫距离；</li>
+<li>余弦距离。</li>
+</ol>
+<p><strong>那么切比雪夫距离</strong>怎么计算呢？二个点之间的切比雪夫距离就是这两个点坐标数值差的绝对值的最大值，用数学表示就是：max(|x1-y1|,|x2-y2|)。</p>
+<p><strong>余弦距离</strong>实际上计算的是两个向量的夹角，是在方向上计算两者之间的差异，对绝对数值不敏感。在兴趣相关性比较上，角度关系比距离的绝对值更重要，因此余弦距离可以用于衡量用户对内容兴趣的区分度。比如我们用搜索引擎搜索某个关键词，它还会给你推荐其他的相关搜索，这些推荐的关键词就是采用余弦距离计算得出的。</p>
+<h2 id="KD树"><a href="#KD树" class="headerlink" title="KD树"></a>KD树</h2><p>其实从上文你也能看出来，KNN的计算过程是大量计算样本点之间的距离。为了减少计算距离次数，提升KNN的搜索效率，人们提出了KD树（K-Dimensional的缩写）。KD树是对数据点在K维空间中划分的一种数据结构。在KD树的构造中，每个节点都是k维数值点的二叉树。既然是二叉树，就可以采用二叉树的增删改查操作，这样就大大提升了搜索效率。</p>
+<p>在这里，我们不需要对KD树的数学原理了解太多，你只需要知道它是一个二叉树的数据结构，方便存储K维空间的数据就可以了。而且在sklearn中，我们直接可以调用KD树，很方便。</p>
+<h2 id="用KNN做回归"><a href="#用KNN做回归" class="headerlink" title="用KNN做回归"></a>用KNN做回归</h2><p>KNN不仅可以做分类，还可以做回归。首先讲下什么是回归。在开头电影这个案例中，如果想要对未知电影进行类型划分，这是一个分类问题。首先看一下要分类的未知电影，离它最近的K部电影大多数属于哪个分类，这部电影就属于哪个分类。</p>
+<p>如果是一部新电影，已知它是爱情片，想要知道它的打斗次数、接吻次数可能是多少，这就是一个回归问题。</p>
+<p>那么KNN如何做回归呢？</p>
+<p>对于一个新点，我们需要找出这个点的K个最近邻居，然后将这些邻居的属性的平均值赋给该点，就可以得到该点的属性。当然不同邻居的影响力权重可以设置成不同的。举个例子，比如一部电影A，已知它是动作片，当K=3时，最近的3部电影是《战狼》，《红海行动》和《碟中谍6》，那么它的打斗次数和接吻次数的预估值分别为(100+95+105)/3=100次、(5+3+31)/3=13次。</p>
+
+                    
+                    <!-- Tags Bottom -->
+                    
+
+                    <!-- Comments -->
+                    
+
+
+
+                </div>
+                <div class="fl w-100 w-30-l center fw3 lh-copy pl4-ns tl black-50">
+                    
+                    <hr class="dn-l mw4 black-50 mt5" />
+                    
+                    <!-- Widget 1: About -->
+                    <div class="mt5 mt0-l">
+    <article class="dt db-l mw8 mw8-m mw5-ns center ml0-l bg-white mv3">
+        <div class="dn dtc-m db-l v-mid tc pr4 pr0-l" style="min-width: 6rem;">
+            <img src="http://tachyons.io/img/avatar_1.jpg" class="mb4-l br-100 h3 w3 h4-l w4-l dib" title="John Doe">
+        </div>
+        <div class="dtc db-l v-mid lh-copy measure center f6 black-50 tj">
+            My name is Alvin Qin and this is my blog.<br>I am a data mining  engineer with a strong front-end focus.<br>
+        </div>
+    </article>
+</div>
+
+                    <hr class="dn-l mw4 black-50 mt5" />
+                    
+                    <!-- Widget 2: Categories -->
+                    
+
+                    <!-- Widget 3: Recent Posts -->
+                    <div class="mt5 tc tl-l">
+    <h3>Recent Posts</h3>
+    
+        <p>
+            <a href="/2018/04/22/classify4/">利用KNN对手写数字集进行识别</a>
+        </p>
+    
+        <p>
+            <a href="/2018/03/19/classify3/">KNN：如何根据打斗和接吻次数来划分电影类型</a>
+        </p>
+    
+        <p>
+            <a href="/2018/02/24/comparison/">常见机器学习模型比较</a>
+        </p>
+    
+        <p>
+            <a href="/2018/01/20/classify1/">利用朴素贝叶斯方法对文档进行分类（2）</a>
+        </p>
+    
+        <p>
+            <a href="/2017/12/28/classify/">利用朴素贝叶斯方法对文档进行分类（1）</a>
+        </p>
+    
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Footer -->
+<div class="bg-1 ph2 ph5-ns pv5">
+        <div class="mv8">
+            <div class="center tc">
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://twitter.com/?lang=en" target="_blank">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://www.facebook.com/" target="_blank">
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://dribbble.com/" target="_blank">
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://github.com/klugjo/hexo-theme-anodyne" target="_blank">
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://plus.google.com/" target="_blank">
+                            <i class="fa fa-google-plus"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://www.behance.net/" target="_blank">
+                            <i class="fa fa-behance"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://500px.com/" target="_blank">
+                            <i class="fa fa-500px"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="mailto:test@example.com" target="_blank">
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="/#" target="_blank">
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </div>
+                
+            </div>
+            <div class="f6 f5-ns center tc white pt5 fw3">
+                @Untitled. All right reserved | Design & Hexo <a class="link dim white" href="http://www.codeblocq.com/">Jonathan Klughertz</a>
+            </div>
+        </div>
+    </div>
+
+<!-- After Footer -->
+<!-- Disqus Comments -->
+
+
+
+</body>
+
+</html>

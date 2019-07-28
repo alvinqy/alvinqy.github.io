@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="朴素贝叶斯分类最适合的场景就是文本分类、情感分析和垃圾邮件识别。其中情感分析和垃圾邮件识别都是通过文本来进行判断。从这里你能看出来，这三个场景本质上都是文本分类，这也是朴素贝叶斯最擅长的地方。所以朴素贝叶斯也常用于自然语言处理NLP的工具。
+今天我带你一起使用朴素贝叶斯做下文档分类的项目，最重要的工">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="John Doe">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="利用朴素贝叶斯方法对文档进行分类（1）">
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Hexo">
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article">
+    
+
+    <!--Page Cover-->
+    
+
+    <meta name="twitter:card" content="summary">
+    
+
+    <!-- Title -->
+    
+    <title>利用朴素贝叶斯方法对文档进行分类（1） - Hexo</title>
+
+    <!-- Tachyons Core CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/tachyons/css/tachyons.min.css">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Google Analytics -->
+    
+
+
+</head>
+
+
+<body>
+
+<!-- Main Content -->
+<!-- Banner -->
+<!-- Banner -->
+<div class="w-100 bg-1 ph5-ns ph3 text-light">
+    
+    <nav class="db dt-l w-100 mw8 center border-box pv3">
+        <a class="db dtc-l v-mid link dim w-100 w-25-l tc tl-l mb2 mb0-l white" href="/" title="Hexo">
+            <img src="http://www.codeblocq.com/assets/projects/hexo-theme-anodyne/assets/anodyne.svg" class="dib h3" alt="Hexo">
+        </a>
+        <div class="db dtc-l v-mid w-100 w-75-l tc tr-l">
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/" 
+                    title="Home">
+                    Home
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/archives" 
+                    title="Archives">
+                    Archives
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/tags" 
+                    title="Tags">
+                    Tags
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/categories" 
+                    title="Categories">
+                    Categories
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/about.html" 
+                    title="About">
+                    About
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/contact.html" 
+                    title="Contact">
+                    Contact
+                </a>
+            
+        </div>
+    </nav>
+
+    <!-- Title -->
+    <div class="w-100 mw8 center vh-40 dt">
+        <div class="dtc v-mid white">
+            <h1 class="f1-l f2-m tc tc-m tl-ns">利用朴素贝叶斯方法对文档进行分类（1）</h1>
+            <p class="f4 fw3 pab-100px tc tc-m tl-ns">2017-12-28</p>
+        </div>
+    </div>
+
+    <!-- Icon -->
+    <div class="relative w-100 mw8 center white dn dn-m db-ns">
+        <i class="header-icon fa fa-file-text-o"></i>
+    </div>
+</div>
+
+<!-- Content -->
+<div class="w-100 ph2 ph4-m ph5-l mv5 mv6-l">
+    <div class="content">
+        <div class="mw8 center">
+            <div class="cf">
+                <div class="fl w-100 w-70-l mw7 left fw3 lh-copy pr4-ns pr0-m post-content">
+                    <!-- Tags Vertical -->
+                    
+
+                    <!-- Main Post Content -->
+                    <p>朴素贝叶斯分类最适合的场景就是文本分类、情感分析和垃圾邮件识别。其中情感分析和垃圾邮件识别都是通过文本来进行判断。从这里你能看出来，这三个场景本质上都是文本分类，这也是朴素贝叶斯最擅长的地方。所以朴素贝叶斯也常用于自然语言处理NLP的工具。</p>
+<p>今天我带你一起使用朴素贝叶斯做下文档分类的项目，最重要的工具就是sklearn这个机器学习神器。</p>
+<h2 id="sklearn机器学习包"><a href="#sklearn机器学习包" class="headerlink" title="sklearn机器学习包"></a>sklearn机器学习包</h2><p>sklearn的全称叫Scikit-learn，它给我们提供了3个朴素贝叶斯分类算法，分别是高斯朴素贝叶斯（GaussianNB）、多项式朴素贝叶斯（MultinomialNB）和伯努利朴素贝叶斯（BernoulliNB）。</p>
+<p>这三种算法适合应用在不同的场景下，我们应该根据特征变量的不同选择不同的算法：</p>
+<p><strong>高斯朴素贝叶斯</strong>：特征变量是连续变量，符合高斯分布，比如说人的身高，物体的长度。</p>
+<p><strong>多项式朴素贝叶斯</strong>：特征变量是离散变量，符合多项分布，在文档分类中特征变量体现在一个单词出现的次数，或者是单词的TF-IDF值等。</p>
+<p><strong>伯努利朴素贝叶斯</strong>：特征变量是布尔变量，符合0/1分布，在文档分类中特征是单词是否出现。</p>
+<p>伯努利朴素贝叶斯是以文件为粒度，如果该单词在某文件中出现了即为1，否则为0。而多项式朴素贝叶斯是以单词为粒度，会计算在某个文件中的具体次数。而高斯朴素贝叶斯适合处理特征变量是连续变量，且符合正态分布（高斯分布）的情况。比如身高、体重这种自然界的现象就比较适合用高斯朴素贝叶斯来处理。而文本分类是使用多项式朴素贝叶斯或者伯努利朴素贝叶斯。</p>
+<h2 id="什么是TF-IDF值呢？"><a href="#什么是TF-IDF值呢？" class="headerlink" title="什么是TF-IDF值呢？"></a>什么是TF-IDF值呢？</h2><p>我在多项式朴素贝叶斯中提到了“词的TF-IDF值”，如何理解这个概念呢？</p>
+<p>TF-IDF是一个统计方法，用来评估某个词语对于一个文件集或文档库中的其中一份文件的重要程度。</p>
+<p>TF-IDF实际上是两个词组Term Frequency和Inverse Document Frequency的总称，两者缩写为TF和IDF，分别代表了词频和逆向文档频率。</p>
+<p><strong>词频TF</strong>计算了一个单词在文档中出现的次数，它认为一个单词的重要性和它在文档中出现的次数呈正比。</p>
+<p><strong>逆向文档频率IDF</strong>，是指一个单词在文档中的区分度。它认为一个单词出现在的文档数越少，就越能通过这个单词把该文档和其他文档区分开。IDF越大就代表该单词的区分度越大。</p>
+<p><strong>所以TF-IDF实际上是词频TF和逆向文档频率IDF的乘积</strong>。这样我们倾向于找到TF和IDF取值都高的单词作为区分，即这个单词在一个文档中出现的次数多，同时又很少出现在其他文档中。这样的单词适合用于分类。</p>
+<h2 id="TF-IDF如何计算"><a href="#TF-IDF如何计算" class="headerlink" title="TF-IDF如何计算"></a>TF-IDF如何计算</h2><p>首先我们看下词频TF和逆向文档概率IDF的公式。</p>
+<p>词频TF=单词出现的次数/该文档的总单词数</p>
+<p>逆向文档频率IDF=log(文档总数)/(该单词出现的文档数+1)</p>
+<p>为什么IDF的分母中，单词出现的文档数要加1呢？因为有些单词可能不会存在文档中，为了避免分母为0，统一给单词出现的文档数都加1。</p>
+<p><strong>TF-IDF=TF*IDF。</strong></p>
+<p>你可以看到，TF-IDF值就是TF与IDF的乘积,这样可以更准确地对文档进行分类。比如“我”这样的高频单词，虽然TF词频高，但是IDF值很低，整体的TF-IDF也不高。</p>
+<p>我在这里举个例子。假设一个文件夹里一共有10篇文档，其中一篇文档有1000个单词，“this”这个单词出现20次，“bayes”出现了5次。“this”在所有文档中均出现过，而“bayes”只在2篇文档中出现过。我们来计算一下这两个词语的TF-IDF值。</p>
+<p>针对“this”，计算TF-IDF值：</p>
+<p>词频TF =20/1000=0.02</p>
+<p>逆向文档频率 IDF=log(10/(10+1))=-0.0414</p>
+<p>所以TF-IDF=0.02*(-0.0414)=-8.28e-4。</p>
+<p>针对“bayes”，计算TF-IDF值：</p>
+<p>词频TF =5/1000=0.005</p>
+<p>逆向文档频率 IDF=log(10/(2+1))=0.5229</p>
+<p>TF-IDF=0.005*0.5229=2.61e-3。</p>
+<p>很明显“bayes”的TF-IDF值要大于“this”的TF-IDF值。这就说明用“bayes”这个单词做区分比单词“this”要好。</p>
+<p><strong>如何求TF-IDF</strong></p>
+<p>在sklearn中我们直接使用TfidfVectorizer类，它可以帮我们计算单词TF-IDF向量的值。在这个类中，取sklearn计算的对数log时，底数是e，不是10。</p>
+<p>下面我来讲下如何创建TfidfVectorizer类。</p>
+<h2 id="TfidfVectorizer类的创建："><a href="#TfidfVectorizer类的创建：" class="headerlink" title="TfidfVectorizer类的创建："></a>TfidfVectorizer类的创建：</h2><p>创建TfidfVectorizer的方法是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TfidfVectorizer(stop_words=stop_words, token_pattern=token_pattern)</span><br></pre></td></tr></table></figure>
+
+<p>我们在创建的时候，有两个构造参数，可以自定义停用词stop_words和规律规则token_pattern。需要注意的是传递的数据结构，停用词stop_words是一个列表List类型，而过滤规则token_pattern是正则表达式。</p>
+<p>什么是停用词？停用词就是在分类中没有用的词，这些词一般词频TF高，但是IDF很低，起不到分类的作用。为了节省空间和计算时间，我们把这些词作为停用词stop words，告诉机器这些词不需要帮我计算。</p>
+<table>
+<thead>
+<tr>
+<th>参数表</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>stop_words</td>
+<td>自定义停用词表，为列表list类型</td>
+</tr>
+<tr>
+<td>token_pattern</td>
+<td>过滤规则，正则表达式，如r”(?u)\b\w+\b”</td>
+</tr>
+</tbody></table>
+<p>当我们创建好TF-IDF向量类型时，可以用fit_transform帮我们计算，返回给我们文本矩阵，该矩阵表示了每个单词在每个文档中的TF-IDF值。</p>
+<table>
+<thead>
+<tr>
+<th>方法表</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>fit_transform(X)</td>
+<td>拟合模型，并返回文本矩阵</td>
+</tr>
+</tbody></table>
+<p>在我们进行fit_transform拟合模型后，我们可以得到更多的TF-IDF向量属性，比如，我们可以得到词汇的对应关系（字典类型）和向量的IDF值，当然也可以获取设置的停用词stop_words。</p>
+<table>
+<thead>
+<tr>
+<th>属性表</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>vocabulary_</td>
+<td>词汇表；字典型</td>
+</tr>
+<tr>
+<td>idf_</td>
+<td>返回idf值</td>
+</tr>
+<tr>
+<td>stop_words_</td>
+<td>返回停用词表</td>
+</tr>
+</tbody></table>
+<p>举个例子，假设我们有4个文档：</p>
+<p>文档1：this is the bayes document；</p>
+<p>文档2：this is the second second document；</p>
+<p>文档3：and the third one；</p>
+<p>文档4：is this the document。</p>
+<p>现在想要计算文档里都有哪些单词，这些单词在不同文档中的TF-IDF值是多少呢？</p>
+<p>首先我们创建TfidfVectorizer类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.feature_extraction.text import TfidfVectorizer</span><br><span class="line">tfidf_vec = TfidfVectorizer()</span><br></pre></td></tr></table></figure>
+
+<p>然后我们创建4个文档的列表documents，并让创建好的tfidf_vec对documents进行拟合，得到TF-IDF矩阵：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">documents = [</span><br><span class="line">    &apos;this is the bayes document&apos;,</span><br><span class="line">    &apos;this is the second second document&apos;,</span><br><span class="line">    &apos;and the third one&apos;,</span><br><span class="line">    &apos;is this the document&apos;</span><br><span class="line">]</span><br><span class="line">tfidf_matrix = tfidf_vec.fit_transform(documents)</span><br></pre></td></tr></table></figure>
+
+<p>输出文档中所有不重复的词：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(&apos;不重复的词:&apos;, tfidf_vec.get_feature_names())</span><br></pre></td></tr></table></figure>
+
+<p>运行结果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">不重复的词: [&apos;and&apos;, &apos;bayes&apos;, &apos;document&apos;, &apos;is&apos;, &apos;one&apos;, &apos;second&apos;, &apos;the&apos;, &apos;third&apos;, &apos;this&apos;]</span><br></pre></td></tr></table></figure>
+
+<p>输出每个单词对应的id值：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(&apos;每个单词的ID:&apos;, tfidf_vec.vocabulary_)</span><br></pre></td></tr></table></figure>
+
+<p>运行结果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">每个单词的ID: &#123;&apos;this&apos;: 8, &apos;is&apos;: 3, &apos;the&apos;: 6, &apos;bayes&apos;: 1, &apos;document&apos;: 2, &apos;second&apos;: 5, &apos;and&apos;: 0, &apos;third&apos;: 7, &apos;one&apos;: 4&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出每个单词在每个文档中的TF-IDF值，向量里的顺序是按照词语的id顺序来的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(&apos;每个单词的tfidf值:&apos;, tfidf_matrix.toarray())</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">每个单词的tfidf值: [[0.         0.63314609 0.40412895 0.40412895 0.         0.</span><br><span class="line">  0.33040189 0.         0.40412895]</span><br><span class="line"> [0.         0.         0.27230147 0.27230147 0.         0.85322574</span><br><span class="line">  0.22262429 0.         0.27230147]</span><br><span class="line"> [0.55280532 0.         0.         0.         0.55280532 0.</span><br><span class="line">  0.28847675 0.55280532 0.        ]</span><br><span class="line"> [0.         0.         0.52210862 0.52210862 0.         0.</span><br><span class="line">  0.42685801 0.         0.52210862]]</span><br></pre></td></tr></table></figure>
+
+
+                    
+                    <!-- Tags Bottom -->
+                    
+
+                    <!-- Comments -->
+                    
+
+
+
+                </div>
+                <div class="fl w-100 w-30-l center fw3 lh-copy pl4-ns tl black-50">
+                    
+                    <hr class="dn-l mw4 black-50 mt5" />
+                    
+                    <!-- Widget 1: About -->
+                    <div class="mt5 mt0-l">
+    <article class="dt db-l mw8 mw8-m mw5-ns center ml0-l bg-white mv3">
+        <div class="dn dtc-m db-l v-mid tc pr4 pr0-l" style="min-width: 6rem;">
+            <img src="http://tachyons.io/img/avatar_1.jpg" class="mb4-l br-100 h3 w3 h4-l w4-l dib" title="John Doe">
+        </div>
+        <div class="dtc db-l v-mid lh-copy measure center f6 black-50 tj">
+            My name is Alvin Qin and this is my blog.<br>I am a data mining  engineer with a strong front-end focus.<br>
+        </div>
+    </article>
+</div>
+
+                    <hr class="dn-l mw4 black-50 mt5" />
+                    
+                    <!-- Widget 2: Categories -->
+                    
+
+                    <!-- Widget 3: Recent Posts -->
+                    <div class="mt5 tc tl-l">
+    <h3>Recent Posts</h3>
+    
+        <p>
+            <a href="/2018/04/22/classify4/">利用KNN对手写数字集进行识别</a>
+        </p>
+    
+        <p>
+            <a href="/2018/03/19/classify3/">KNN：如何根据打斗和接吻次数来划分电影类型</a>
+        </p>
+    
+        <p>
+            <a href="/2018/02/24/comparison/">常见机器学习模型比较</a>
+        </p>
+    
+        <p>
+            <a href="/2018/01/20/classify1/">利用朴素贝叶斯方法对文档进行分类（2）</a>
+        </p>
+    
+        <p>
+            <a href="/2017/12/28/classify/">利用朴素贝叶斯方法对文档进行分类（1）</a>
+        </p>
+    
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Footer -->
+<div class="bg-1 ph2 ph5-ns pv5">
+        <div class="mv8">
+            <div class="center tc">
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://twitter.com/?lang=en" target="_blank">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://www.facebook.com/" target="_blank">
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://dribbble.com/" target="_blank">
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://github.com/klugjo/hexo-theme-anodyne" target="_blank">
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://plus.google.com/" target="_blank">
+                            <i class="fa fa-google-plus"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://www.behance.net/" target="_blank">
+                            <i class="fa fa-behance"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://500px.com/" target="_blank">
+                            <i class="fa fa-500px"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="mailto:test@example.com" target="_blank">
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="/#" target="_blank">
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </div>
+                
+            </div>
+            <div class="f6 f5-ns center tc white pt5 fw3">
+                @Untitled. All right reserved | Design & Hexo <a class="link dim white" href="http://www.codeblocq.com/">Jonathan Klughertz</a>
+            </div>
+        </div>
+    </div>
+
+<!-- After Footer -->
+<!-- Disqus Comments -->
+
+
+
+</body>
+
+</html>

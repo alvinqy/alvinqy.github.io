@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="KNN实际上是计算待分类物体与其他物体之间的距离，然后通过统计最近的K个邻居的分类情况，来决定这个物体的分类情况。
+这节课，我们先看下如何在sklearn中使用KNN算法，然后通过sklearn中自带的手写数字数据集来进行实战。
+之前我还讲过SVM、朴素贝叶斯和决策树分类，我们还可以用这个数据集来做">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="John Doe">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="利用KNN对手写数字集进行识别">
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Hexo">
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article">
+    
+
+    <!--Page Cover-->
+    
+
+    <meta name="twitter:card" content="summary">
+    
+
+    <!-- Title -->
+    
+    <title>利用KNN对手写数字集进行识别 - Hexo</title>
+
+    <!-- Tachyons Core CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/tachyons/css/tachyons.min.css">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Google Analytics -->
+    
+
+
+</head>
+
+
+<body>
+
+<!-- Main Content -->
+<!-- Banner -->
+<!-- Banner -->
+<div class="w-100 bg-1 ph5-ns ph3 text-light">
+    
+    <nav class="db dt-l w-100 mw8 center border-box pv3">
+        <a class="db dtc-l v-mid link dim w-100 w-25-l tc tl-l mb2 mb0-l white" href="/" title="Hexo">
+            <img src="http://www.codeblocq.com/assets/projects/hexo-theme-anodyne/assets/anodyne.svg" class="dib h3" alt="Hexo">
+        </a>
+        <div class="db dtc-l v-mid w-100 w-75-l tc tr-l">
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/" 
+                    title="Home">
+                    Home
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/archives" 
+                    title="Archives">
+                    Archives
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/tags" 
+                    title="Tags">
+                    Tags
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/categories" 
+                    title="Categories">
+                    Categories
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/about.html" 
+                    title="About">
+                    About
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/contact.html" 
+                    title="Contact">
+                    Contact
+                </a>
+            
+        </div>
+    </nav>
+
+    <!-- Title -->
+    <div class="w-100 mw8 center vh-40 dt">
+        <div class="dtc v-mid white">
+            <h1 class="f1-l f2-m tc tc-m tl-ns">利用KNN对手写数字集进行识别</h1>
+            <p class="f4 fw3 pab-100px tc tc-m tl-ns">2018-04-22</p>
+        </div>
+    </div>
+
+    <!-- Icon -->
+    <div class="relative w-100 mw8 center white dn dn-m db-ns">
+        <i class="header-icon fa fa-file-text-o"></i>
+    </div>
+</div>
+
+<!-- Content -->
+<div class="w-100 ph2 ph4-m ph5-l mv5 mv6-l">
+    <div class="content">
+        <div class="mw8 center">
+            <div class="cf">
+                <div class="fl w-100 w-70-l mw7 left fw3 lh-copy pr4-ns pr0-m post-content">
+                    <!-- Tags Vertical -->
+                    
+
+                    <!-- Main Post Content -->
+                    <p>KNN实际上是计算待分类物体与其他物体之间的距离，然后通过统计最近的K个邻居的分类情况，来决定这个物体的分类情况。</p>
+<p>这节课，我们先看下如何在sklearn中使用KNN算法，然后通过sklearn中自带的手写数字数据集来进行实战。</p>
+<p>之前我还讲过SVM、朴素贝叶斯和决策树分类，我们还可以用这个数据集来做下训练，对比下这四个分类器的训练结果。</p>
+<h2 id="如何在sklearn中使用KNN"><a href="#如何在sklearn中使用KNN" class="headerlink" title="如何在sklearn中使用KNN"></a>如何在sklearn中使用KNN</h2><p>在Python的sklearn工具包中有KNN算法。KNN既可以做分类器，也可以做回归。如果是做分类，你需要引用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.neighbors import KNeighborsClassifier</span><br></pre></td></tr></table></figure>
+
+<p>如果是做回归，你需要引用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.neighbors import KNeighborsRegressor</span><br></pre></td></tr></table></figure>
+
+<p>从名字上你也能看出来Classifier对应的是分类，Regressor对应的是回归。一般来说如果一个算法有Classifier类，都能找到相应的Regressor类。比如在决策树分类中，你可以使用DecisionTreeClassifier，也可以使用决策树来做回归DecisionTreeRegressor。</p>
+<p>好了，我们看下如何在sklearn中创建KNN分类器。</p>
+<p>这里，我们使用构造函数KNeighborsClassifier(n_neighbors=5, weights=‘uniform’, algorithm=‘auto’, leaf_size=30)，这里有几个比较主要的参数，我分别来讲解下：</p>
+<p>1.n_neighbors：即KNN中的K值，代表的是邻居的数量。K值如果比较小，会造成过拟合。如果K值比较大，无法将未知物体分类出来。一般我们使用默认值5。</p>
+<p>2.weights：是用来确定邻居的权重，有三种方式：</p>
+<ul>
+<li>weights=uniform，代表所有邻居的权重相同；</li>
+<li>weights=distance，代表权重是距离的倒数，即与距离成反比；</li>
+<li>自定义函数，你可以自定义不同距离所对应的权重。大部分情况下不需要自己定义函数。</li>
+</ul>
+<p>3.algorithm：用来规定计算邻居的方法，它有四种方式：</p>
+<ul>
+<li>algorithm=auto，根据数据的情况自动选择适合的算法，默认情况选择auto；</li>
+<li>algorithm=kd_tree，也叫作KD树，是多维空间的数据结构，方便对关键数据进行检索，不过KD树适用于维度少的情况，一般维数不超过20，如果维数大于20之后，效率反而会下降；</li>
+<li>algorithm=ball_tree，也叫作球树，它和KD树一样都是多维空间的数据结果，不同于KD树，球树更适用于维度大的情况；</li>
+<li>algorithm=brute，也叫作暴力搜索，它和KD树不同的地方是在于采用的是线性扫描，而不是通过构造树结构进行快速检索。当训练集大的时候，效率很低。</li>
+</ul>
+<p>4.leaf_size：代表构造KD树或球树时的叶子数，默认是30，调整leaf_size会影响到树的构造和搜索速度。</p>
+<p>创建完KNN分类器之后，我们就可以输入训练集对它进行训练，这里我们使用fit()函数，传入训练集中的样本特征矩阵和分类标识，会自动得到训练好的KNN分类器。然后可以使用predict()函数来对结果进行预测，这里传入测试集的特征矩阵，可以得到测试集的预测分类结果。</p>
+<h1 id="利用KNN对手写数据集进行识别分类"><a href="#利用KNN对手写数据集进行识别分类" class="headerlink" title="利用KNN对手写数据集进行识别分类"></a>利用KNN对手写数据集进行识别分类</h1><p>手写数字数据集是个非常有名的用于图像识别的数据集。数字识别的过程就是将这些图片与分类结果0-9一一对应起来。完整的手写数字数据集MNIST里面包括了60000个训练样本，以及10000个测试样本。如果你学习深度学习的话，MNIST基本上是你接触的第一个数据集。</p>
+<p>今天我们用sklearn自带的手写数字数据集做KNN分类，你可以把这个数据集理解成一个简版的MNIST数据集，它只包括了1797幅数字图像，每幅图像大小是8*8像素。</p>
+<p>好了，我们先来规划下整个KNN分类的流程：</p>
+<p>整个训练过程基本上都会包括三个阶段：</p>
+<ol>
+<li>数据加载：我们可以直接从sklearn中加载自带的手写数字数据集；</li>
+<li>准备阶段：在这个阶段中，我们需要对数据集有个初步的了解，比如样本的个数、图像长什么样、识别结果是怎样的。你可以通过可视化的方式来查看图像的呈现。通过数据规范化可以让数据都在同一个数量级的维度。另外，因为训练集是图像，每幅图像是个8*8的矩阵，我们不需要对它进行特征选择，将全部的图像数据作为特征值矩阵即可；</li>
+<li>分类阶段：通过训练可以得到分类器，然后用测试集进行准确率的计算。</li>
+</ol>
+<p>首先是加载数据和对数据的探索。</p>
+<p>sklearn自带的手写数字数据集一共包括了1797个样本，每幅图像都是8*8像素的矩阵。因为并没有专门的测试集，所以我们需要对数据集做划分，划分成训练集和测试集。因为KNN算法和距离定义相关，我们需要对数据进行规范化处理，采用Z-Score规范化。</p>
+<p>然后我们构造一个KNN分类器knn，把训练集的数据传入构造好的knn，并通过测试集进行结果预测，与测试集的结果进行对比，得到KNN分类器准确率。</p>
+<p>代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.model_selection import train_test_split</span><br><span class="line">from sklearn import preprocessing</span><br><span class="line">from sklearn.metrics import accuracy_score</span><br><span class="line">from sklearn.datasets import load_digits</span><br><span class="line">from sklearn.neighbors import KNeighborsClassifier</span><br><span class="line">from sklearn.svm import SVC</span><br><span class="line">from sklearn.naive_bayes import MultinomialNB</span><br><span class="line">from sklearn.tree import DecisionTreeClassifier</span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line"></span><br><span class="line"># 加载数据</span><br><span class="line">digits = load_digits()</span><br><span class="line">data = digits.data</span><br><span class="line"># 数据探索</span><br><span class="line">print(data.shape)</span><br><span class="line"># 查看第一幅图像</span><br><span class="line">print(digits.images[0])</span><br><span class="line"># 第一幅图像代表的数字含义</span><br><span class="line">print(digits.target[0])</span><br><span class="line"># 将第一幅图像显示出来</span><br><span class="line">plt.gray()</span><br><span class="line">plt.imshow(digits.images[0])</span><br><span class="line">plt.show()</span><br><span class="line"></span><br><span class="line"># 分割数据，将25%的数据作为测试集，其余作为训练集</span><br><span class="line">train_x, test_x, train_y, test_y = train_test_split(data, digits.target, test_size=0.25, random_state=33)</span><br><span class="line"></span><br><span class="line"># 采用Z-Score规范化</span><br><span class="line">ss = preprocessing.StandardScaler()</span><br><span class="line">train_ss_x = ss.fit_transform(train_x)</span><br><span class="line">test_ss_x = ss.transform(test_x)</span><br><span class="line"></span><br><span class="line"># 创建KNN分类器</span><br><span class="line">knn = KNeighborsClassifier()</span><br><span class="line">knn.fit(train_ss_x, train_y) </span><br><span class="line">predict_y = knn.predict(test_ss_x) </span><br><span class="line">print(&quot;KNN准确率: %.4lf&quot; % accuracy_score(test_y, predict_y))</span><br></pre></td></tr></table></figure>
+
+<p>运行结果为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">KNN准确率: 0.9756</span><br></pre></td></tr></table></figure>
+
+<p>们还讲过SVM、朴素贝叶斯和决策树分类。我们用手写数字数据集一起来训练下这些分类器，然后对比下哪个分类器的效果更好。代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"># 创建SVM分类器</span><br><span class="line">svm = SVC()</span><br><span class="line">svm.fit(train_ss_x, train_y)</span><br><span class="line">predict_y=svm.predict(test_ss_x)</span><br><span class="line">print(&apos;SVM准确率: %0.4lf&apos; % accuracy_score(test_y, predict_y))</span><br><span class="line"></span><br><span class="line"># 采用Min-Max规范化</span><br><span class="line">mm = preprocessing.MinMaxScaler()</span><br><span class="line">train_mm_x = mm.fit_transform(train_x)</span><br><span class="line">test_mm_x = mm.transform(test_x)</span><br><span class="line"></span><br><span class="line"># 创建Naive Bayes分类器</span><br><span class="line">mnb = MultinomialNB()</span><br><span class="line">mnb.fit(train_mm_x, train_y) </span><br><span class="line">predict_y = mnb.predict(test_mm_x) </span><br><span class="line">print(&quot;多项式朴素贝叶斯准确率: %.4lf&quot; % accuracy_score(test_y, predict_y))</span><br><span class="line"></span><br><span class="line"># 创建CART决策树分类器</span><br><span class="line">dtc = DecisionTreeClassifier()</span><br><span class="line">dtc.fit(train_mm_x, train_y) </span><br><span class="line">predict_y = dtc.predict(test_mm_x) </span><br><span class="line">print(&quot;CART决策树准确率: %.4lf&quot; % accuracy_score(test_y, predict_y))</span><br></pre></td></tr></table></figure>
+
+<p>运行结果如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SVM准确率: 0.9867</span><br><span class="line">多项式朴素贝叶斯准确率: 0.8844</span><br><span class="line">CART决策树准确率: 0.8556</span><br></pre></td></tr></table></figure>
+
+<p>这里需要注意的是，我们在做多项式朴素贝叶斯分类的时候，传入的数据不能有负数。因为Z-Score会将数值规范化为一个标准的正态分布，即均值为0，方差为1，数值会包含负数。因此我们需要采用Min-Max规范化，将数据规范化到[0,1]范围内。</p>
+<p>好了，我们整理下这4个分类器的结果。</p>
+<table>
+<thead>
+<tr>
+<th>分类器</th>
+<th>准确率</th>
+<th>排名</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SVM</td>
+<td>0.9867</td>
+<td>1</td>
+</tr>
+<tr>
+<td>KNN</td>
+<td>0.9756</td>
+<td>2</td>
+</tr>
+<tr>
+<td>多项式朴素贝叶斯</td>
+<td>0.8844</td>
+<td>3</td>
+</tr>
+<tr>
+<td>CART决策树</td>
+<td>0.8600</td>
+<td>4</td>
+</tr>
+</tbody></table>
+
+                    
+                    <!-- Tags Bottom -->
+                    
+
+                    <!-- Comments -->
+                    
+
+
+
+                </div>
+                <div class="fl w-100 w-30-l center fw3 lh-copy pl4-ns tl black-50">
+                    
+                    <hr class="dn-l mw4 black-50 mt5" />
+                    
+                    <!-- Widget 1: About -->
+                    <div class="mt5 mt0-l">
+    <article class="dt db-l mw8 mw8-m mw5-ns center ml0-l bg-white mv3">
+        <div class="dn dtc-m db-l v-mid tc pr4 pr0-l" style="min-width: 6rem;">
+            <img src="http://tachyons.io/img/avatar_1.jpg" class="mb4-l br-100 h3 w3 h4-l w4-l dib" title="John Doe">
+        </div>
+        <div class="dtc db-l v-mid lh-copy measure center f6 black-50 tj">
+            My name is Alvin Qin and this is my blog.<br>I am a data mining  engineer with a strong front-end focus.<br>
+        </div>
+    </article>
+</div>
+
+                    <hr class="dn-l mw4 black-50 mt5" />
+                    
+                    <!-- Widget 2: Categories -->
+                    
+
+                    <!-- Widget 3: Recent Posts -->
+                    <div class="mt5 tc tl-l">
+    <h3>Recent Posts</h3>
+    
+        <p>
+            <a href="/2018/04/22/classify4/">利用KNN对手写数字集进行识别</a>
+        </p>
+    
+        <p>
+            <a href="/2018/03/19/classify3/">KNN：如何根据打斗和接吻次数来划分电影类型</a>
+        </p>
+    
+        <p>
+            <a href="/2018/02/24/comparison/">常见机器学习模型比较</a>
+        </p>
+    
+        <p>
+            <a href="/2018/01/20/classify1/">利用朴素贝叶斯方法对文档进行分类（2）</a>
+        </p>
+    
+        <p>
+            <a href="/2017/12/28/classify/">利用朴素贝叶斯方法对文档进行分类（1）</a>
+        </p>
+    
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Footer -->
+<div class="bg-1 ph2 ph5-ns pv5">
+        <div class="mv8">
+            <div class="center tc">
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://twitter.com/?lang=en" target="_blank">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://www.facebook.com/" target="_blank">
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://dribbble.com/" target="_blank">
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://github.com/klugjo/hexo-theme-anodyne" target="_blank">
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://plus.google.com/" target="_blank">
+                            <i class="fa fa-google-plus"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://www.behance.net/" target="_blank">
+                            <i class="fa fa-behance"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://500px.com/" target="_blank">
+                            <i class="fa fa-500px"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="mailto:test@example.com" target="_blank">
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="/#" target="_blank">
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </div>
+                
+            </div>
+            <div class="f6 f5-ns center tc white pt5 fw3">
+                @Untitled. All right reserved | Design & Hexo <a class="link dim white" href="http://www.codeblocq.com/">Jonathan Klughertz</a>
+            </div>
+        </div>
+    </div>
+
+<!-- After Footer -->
+<!-- Disqus Comments -->
+
+
+
+</body>
+
+</html>
