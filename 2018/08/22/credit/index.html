@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="在数据挖掘的过程中，我们经常会遇到一些问题，比如：如何选择各种分类器，到底选择哪个分类算法，是 SVM，决策树，还是 KNN？如何优化分类器的参数，以便得到更好的分类准确率？这两个问题，是数据挖掘核心的问题。本篇文章主要围绕着解决以下3个问题，分别是：
+
+创建各种分类器，包括已经掌握的 SVM、决策">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="John Doe">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="利用GridSearchCV工具优化模型的参数">
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Hexo">
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article">
+    
+
+    <!--Page Cover-->
+    
+
+    <meta name="twitter:card" content="summary">
+    
+
+    <!-- Title -->
+    
+    <title>利用GridSearchCV工具优化模型的参数 - Hexo</title>
+
+    <!-- Tachyons Core CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/tachyons/css/tachyons.min.css">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Google Analytics -->
+    
+
+
+</head>
+
+
+<body>
+
+<!-- Main Content -->
+<!-- Banner -->
+<!-- Banner -->
+<div class="w-100 bg-1 ph5-ns ph3 text-light">
+    
+    <nav class="db dt-l w-100 mw8 center border-box pv3">
+        <a class="db dtc-l v-mid link dim w-100 w-25-l tc tl-l mb2 mb0-l white" href="/" title="Hexo">
+            <img src="http://www.codeblocq.com/assets/projects/hexo-theme-anodyne/assets/anodyne.svg" class="dib h3" alt="Hexo">
+        </a>
+        <div class="db dtc-l v-mid w-100 w-75-l tc tr-l">
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/" 
+                    title="Home">
+                    Home
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/archives" 
+                    title="Archives">
+                    Archives
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/tags" 
+                    title="Tags">
+                    Tags
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/categories" 
+                    title="Categories">
+                    Categories
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/about.html" 
+                    title="About">
+                    About
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/contact.html" 
+                    title="Contact">
+                    Contact
+                </a>
+            
+        </div>
+    </nav>
+
+    <!-- Title -->
+    <div class="w-100 mw8 center vh-40 dt">
+        <div class="dtc v-mid white">
+            <h1 class="f1-l f2-m tc tc-m tl-ns">利用GridSearchCV工具优化模型的参数</h1>
+            <p class="f4 fw3 pab-100px tc tc-m tl-ns">2018-08-22</p>
+        </div>
+    </div>
+
+    <!-- Icon -->
+    <div class="relative w-100 mw8 center white dn dn-m db-ns">
+        <i class="header-icon fa fa-file-text-o"></i>
+    </div>
+</div>
+
+<!-- Content -->
+<div class="w-100 ph2 ph4-m ph5-l mv5 mv6-l">
+    <div class="content">
+        <div class="mw8 center">
+            <div class="cf">
+                <div class="fl w-100 w-70-l mw7 left fw3 lh-copy pr4-ns pr0-m post-content">
+                    <!-- Tags Vertical -->
+                    
+
+                    <!-- Main Post Content -->
+                    <p>在数据挖掘的过程中，我们经常会遇到一些问题，比如：<br>如何选择各种分类器，到底选择哪个分类算法，是 SVM，决策树，还是 KNN？如何优化分类器<br>的参数，以便得到更好的分类准确率？<br>这两个问题，是数据挖掘核心的问题。<br>本篇文章主要围绕着解决以下3个问题，分别是：</p>
+<ol>
+<li>创建各种分类器，包括已经掌握的 SVM、决策树、KNN 分类器，以及随机森林分类器； </li>
+<li>掌握 GridSearchCV 工具，优化算法模型的参数； </li>
+<li>使用 Pipeline 管道机制进行流水线作业。因为在做分类之前，我们还需要一些准备过程，比<br>如数据规范化，或者数据降维等 </li>
+</ol>
+<h1 id="构建随机森林分类器"><a href="#构建随机森林分类器" class="headerlink" title="构建随机森林分类器"></a>构建随机森林分类器</h1><p>在算法篇中，前面的文章介绍了数据挖掘十大经典算法。实际工作中，经常会用到随机森林。<br>随机森林的英文是 Random Forest，英文简写是 RF。它实际上是一个包含多个决策树的分类<br>器，每一个子分类器都是一棵 CART 分类回归树。所以随机森林既可以做分类，又可以做回归。<br>当它做分类的时候，输出结果是每个子分类器的分类结果中最多的那个。你可以理解是每个分类<br>器都做投票，取投票最多的那个结果。当它做回归的时候，输出结果是每棵 CART 树的回归结果<br>的平均值。<br>在 sklearn 中，我们使用 RandomForestClassifier() 构造随机森林模型，函数里有一些常用的构<br>造参数： </p>
+<table>
+<thead>
+<tr>
+<th align="center">n_estimators</th>
+<th align="center">随机森林里决策树的个数，默认是10</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">criterion</td>
+<td align="center">决策树分裂的标准，默认是基尼系数（CART算法），也可以选择entropy(ID3算法)</td>
+</tr>
+<tr>
+<td align="center">max_depth</td>
+<td align="center">决策树的最大深度，默认是None,也就是不限制决策树的深度，也可以设置一个整数，限制决策树的最大深度</td>
+</tr>
+<tr>
+<td align="center">n_jobs</td>
+<td align="center">拟合和预测的时候CPU的核数，默认是1，也可以是整数，如果是-1则代表CPU的核数</td>
+</tr>
+</tbody></table>
+<p>构造好分类器后，就可以使用 fit 函数拟合，使用 predict 函数预测。 </p>
+<h1 id="使用-GridSearchCV-工具对模型参数进行调优"><a href="#使用-GridSearchCV-工具对模型参数进行调优" class="headerlink" title="使用 GridSearchCV 工具对模型参数进行调优"></a>使用 GridSearchCV 工具对模型参数进行调优</h1><p>在做分类算法的时候，我们需要经常调节网络参数（对应上面的构造参数），目的是得到更好的分类结果。实际上一个分类算法有很多参数，取值范围也比较广，那么该如何调优呢？<br>Python 给我们提供了一个很好用的工具 GridSearchCV，它是 Python 的参数自动搜索模块。我们只要告诉它想要调优的参数有哪些以及参数的取值范围，它就会把所有的情况都跑一遍，然后告诉我们哪个参数是最优的，结果如何。<br>使用 GridSearchCV 模块需要先引用工具包，方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.model_selection import GridSearchCV</span><br></pre></td></tr></table></figure>
+
+<p> 然后我们使用 GridSearchCV(estimator, param_grid, cv=None, scoring=None) 构造参数的自动搜索模块，这里有一些主要的参数需要说明下： </p>
+<table>
+<thead>
+<tr>
+<th align="center">estimator</th>
+<th align="center">代表我们想要的分类器，比如随机森林、决策树、SVM、KNN等</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">param_grid</td>
+<td align="center">代表我们想要优化的参数及取值，输入的是字典或者列表的形式</td>
+</tr>
+<tr>
+<td align="center">cv</td>
+<td align="center">交叉验证的折数，默认为None，代表使用三折交叉验证。也可以为整数，代表的是交叉验证的折数</td>
+</tr>
+<tr>
+<td align="center">scoring</td>
+<td align="center">准确度的评价准则，默认为None，也就是需要使用score函数。也可以设置具体的评价标准，比如accuracy，F1等</td>
+</tr>
+</tbody></table>
+<p>这里举一个简单的例子，我们用 sklearn 自带的 IRIS 数据集，采用随机森林对 IRIS 数据分类。假设我们想知道 n_estimators 在 1-10 的范围内取哪个值的分类结果最好，可以编写代码： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.ensemble import RandomForestClassifier</span><br><span class="line">from sklearn.model_selection import GridSearchCV</span><br><span class="line">from sklearn.datasets import load_iris</span><br><span class="line">rf = RandomForestClassifier()</span><br><span class="line">parameters=&#123;&quot;n_estimators&quot;:range(1,11)&#125;</span><br><span class="line">iris = load_iris()</span><br><span class="line">print(iris.keys())</span><br><span class="line">clf = GridSearchCV(estimator=rf,param_grid=parameters)</span><br><span class="line">clf.fit(iris.data,iris.target)</span><br><span class="line">print(&quot;最优分数：%.4f&quot;%clf.best_score_)</span><br><span class="line">print(&quot;最优参数：&quot;,clf.best_params_)</span><br><span class="line">最优分数：0.9600</span><br><span class="line">最优参数： &#123;&apos;n_estimators&apos;: 5&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以当我们采用随机森林作为分类器的时候，最优准确率是 0.9600，当 n_estimators=5 的时候，是最优参数，也就是随机森林一共有 5 个子决策树。 </p>
+<h1 id="使用-Pipeline-管道机制进行流水线作业"><a href="#使用-Pipeline-管道机制进行流水线作业" class="headerlink" title="使用 Pipeline 管道机制进行流水线作业"></a>使用 Pipeline 管道机制进行流水线作业</h1><p>做分类的时候往往都是有步骤的，比如先对数据进行规范化处理，你也可以用 PCA 方法（一种常用的降维方法）对数据降维，最后使用分类器分类。<br>Python 有一种 Pipeline 管道机制。管道机制就是让我们把每一步都按顺序列下来，从而创建Pipeline 流水线作业。每一步都采用 (‘名称’, 步骤) 的方式来表示。<br>我们需要先采用 StandardScaler 方法对数据规范化，即采用数据规范化为均值为 0，方差为 1的正态分布，然后采用 PCA 方法对数据进行降维，最后采用随机森林进行分类。 </p>
+<p>代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.model_selection import GridSearchCV</span><br><span class="line">pipeline = Pipeline([</span><br><span class="line">(&apos;scaler&apos;, StandardScaler()),</span><br><span class="line">(&apos;pca&apos;, PCA()),</span><br><span class="line">(&apos;randomforestclassifier&apos;, RandomForestClassifier())</span><br><span class="line">])</span><br></pre></td></tr></table></figure>
+
+<p>那么我们现在采用 Pipeline 管道机制，用随机森林对 IRIS 数据集做一下分类。先用StandardScaler 方法对数据规范化，然后采用随机森林分类器，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.preprocessing import StandardScaler</span><br><span class="line">from sklearn.pipeline import Pipeline</span><br><span class="line">from sklearn.model_selection import GridSearchCV</span><br><span class="line">from sklearn.ensemble import RandomForestClassifier</span><br><span class="line">from sklearn.datasets import load_iris</span><br><span class="line">rf = RandomForestClassifier()</span><br><span class="line">parameters= &#123;&quot;n_estimators&quot;:range(1,11)&#125;</span><br><span class="line">iris = load_iris()</span><br><span class="line">print(iris.keys())</span><br><span class="line">pipeline = Pipeline([</span><br><span class="line">    (&apos;scaler&apos;,StandardScaler()),</span><br><span class="line">    (&apos;randomforestclassifier&apos;,rf)</span><br><span class="line">])</span><br><span class="line">clf = GridSearchCV(estimator=pipeline,param_grid=parameters)</span><br><span class="line">clf.fit(iris.data,iris.target)</span><br><span class="line">print(&quot;最优分数：%.4f&quot;%clf.best_score_)</span><br><span class="line">print(&quot;最优参数：&quot;,clf.best_params_)</span><br><span class="line">运行结果：</span><br><span class="line">最优分数： 0.9667</span><br><span class="line">最优参数： &#123;&apos;randomforestclassifier__n_estimators&apos;: 9&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到是否采用数据规范化对结果还是有一些影响的，有了 GridSearchCV 和 Pipeline 这两个工具之后，我们在使用分类器的时候就会方便很多 。</p>
+
+                    
+                    <!-- Tags Bottom -->
+                    
+
+                    <!-- Comments -->
+                    
+
+
+
+                </div>
+                <div class="fl w-100 w-30-l center fw3 lh-copy pl4-ns tl black-50">
+                    
+                    <hr class="dn-l mw4 black-50 mt5" />
+                    
+                    <!-- Widget 1: About -->
+                    <div class="mt5 mt0-l">
+    <article class="dt db-l mw8 mw8-m mw5-ns center ml0-l bg-white mv3">
+        <div class="dn dtc-m db-l v-mid tc pr4 pr0-l" style="min-width: 6rem;">
+            <img src="http://tachyons.io/img/avatar_1.jpg" class="mb4-l br-100 h3 w3 h4-l w4-l dib" title="John Doe">
+        </div>
+        <div class="dtc db-l v-mid lh-copy measure center f6 black-50 tj">
+            My name is Alvin Qin and this is my blog.<br>I am a data mining  engineer with a strong front-end focus.<br>
+        </div>
+    </article>
+</div>
+
+                    <hr class="dn-l mw4 black-50 mt5" />
+                    
+                    <!-- Widget 2: Categories -->
+                    
+
+                    <!-- Widget 3: Recent Posts -->
+                    <div class="mt5 tc tl-l">
+    <h3>Recent Posts</h3>
+    
+        <p>
+            <a href="/2018/09/10/credit-default/">信用卡违约率的实战分析模型</a>
+        </p>
+    
+        <p>
+            <a href="/2018/08/22/credit/">利用GridSearchCV工具优化模型的参数</a>
+        </p>
+    
+        <p>
+            <a href="/2018/07/20/em聚类/">如何理解EM聚类的原理</a>
+        </p>
+    
+        <p>
+            <a href="/2018/06/10/乳腺癌案例2/">利用SVM分类器进行乳腺癌的检测（2）</a>
+        </p>
+    
+        <p>
+            <a href="/2018/05/29/svm分类器/">利用SVM分类器进行乳腺癌的检测（1）</a>
+        </p>
+    
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Footer -->
+<div class="bg-1 ph2 ph5-ns pv5">
+        <div class="mv8">
+            <div class="center tc">
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://twitter.com/?lang=en" target="_blank">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://www.facebook.com/" target="_blank">
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://dribbble.com/" target="_blank">
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://github.com/klugjo/hexo-theme-anodyne" target="_blank">
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://plus.google.com/" target="_blank">
+                            <i class="fa fa-google-plus"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://www.behance.net/" target="_blank">
+                            <i class="fa fa-behance"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://500px.com/" target="_blank">
+                            <i class="fa fa-500px"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="mailto:test@example.com" target="_blank">
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="/#" target="_blank">
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </div>
+                
+            </div>
+            <div class="f6 f5-ns center tc white pt5 fw3">
+                @Untitled. All right reserved | Design & Hexo <a class="link dim white" href="http://www.codeblocq.com/">Jonathan Klughertz</a>
+            </div>
+        </div>
+    </div>
+
+<!-- After Footer -->
+<!-- Disqus Comments -->
+
+
+
+</body>
+
+</html>

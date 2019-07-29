@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="如何用SVM进行乳腺癌检测上篇文章中，详细介绍了如何创建和使用SVM分类器后，我们来看一个实际的项目，数据集来自美国威斯康星州的乳腺癌诊断数据集。
+医疗人员采集了患者乳腺肿块经过细针穿刺(FNA)后的数字化图像，并且对这些数字图像进行了特征提取，这些特征可以描述图像中的细胞核呈现。肿瘤可以分成良性和">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="John Doe">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="利用SVM分类器进行乳腺癌的检测（2）">
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Hexo">
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article">
+    
+
+    <!--Page Cover-->
+    
+
+    <meta name="twitter:card" content="summary">
+    
+
+    <!-- Title -->
+    
+    <title>利用SVM分类器进行乳腺癌的检测（2） - Hexo</title>
+
+    <!-- Tachyons Core CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/tachyons/css/tachyons.min.css">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Google Analytics -->
+    
+
+
+</head>
+
+
+<body>
+
+<!-- Main Content -->
+<!-- Banner -->
+<!-- Banner -->
+<div class="w-100 bg-1 ph5-ns ph3 text-light">
+    
+    <nav class="db dt-l w-100 mw8 center border-box pv3">
+        <a class="db dtc-l v-mid link dim w-100 w-25-l tc tl-l mb2 mb0-l white" href="/" title="Hexo">
+            <img src="http://www.codeblocq.com/assets/projects/hexo-theme-anodyne/assets/anodyne.svg" class="dib h3" alt="Hexo">
+        </a>
+        <div class="db dtc-l v-mid w-100 w-75-l tc tr-l">
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/" 
+                    title="Home">
+                    Home
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/archives" 
+                    title="Archives">
+                    Archives
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/tags" 
+                    title="Tags">
+                    Tags
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/categories" 
+                    title="Categories">
+                    Categories
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/about.html" 
+                    title="About">
+                    About
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/contact.html" 
+                    title="Contact">
+                    Contact
+                </a>
+            
+        </div>
+    </nav>
+
+    <!-- Title -->
+    <div class="w-100 mw8 center vh-40 dt">
+        <div class="dtc v-mid white">
+            <h1 class="f1-l f2-m tc tc-m tl-ns">利用SVM分类器进行乳腺癌的检测（2）</h1>
+            <p class="f4 fw3 pab-100px tc tc-m tl-ns">2018-06-10</p>
+        </div>
+    </div>
+
+    <!-- Icon -->
+    <div class="relative w-100 mw8 center white dn dn-m db-ns">
+        <i class="header-icon fa fa-file-text-o"></i>
+    </div>
+</div>
+
+<!-- Content -->
+<div class="w-100 ph2 ph4-m ph5-l mv5 mv6-l">
+    <div class="content">
+        <div class="mw8 center">
+            <div class="cf">
+                <div class="fl w-100 w-70-l mw7 left fw3 lh-copy pr4-ns pr0-m post-content">
+                    <!-- Tags Vertical -->
+                    
+
+                    <!-- Main Post Content -->
+                    <h1 id="如何用SVM进行乳腺癌检测"><a href="#如何用SVM进行乳腺癌检测" class="headerlink" title="如何用SVM进行乳腺癌检测"></a>如何用SVM进行乳腺癌检测</h1><p>上篇文章中，详细介绍了如何创建和使用SVM分类器后，我们来看一个实际的项目，数据集来自美国威斯康星州的乳腺癌诊断数据集。</p>
+<p>医疗人员采集了患者乳腺肿块经过细针穿刺(FNA)后的数字化图像，并且对这些数字图像进行了特征提取，这些特征可以描述图像中的细胞核呈现。肿瘤可以分成良性和恶性。部分数据截屏如下所示：</p>
+<p><img src="/2018/06/10/乳腺癌案例2/1564362878499.png" alt="1564362878499"></p>
+<p>数据表一共包括了32个字段，代表的含义如下：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>ID标识</td>
+</tr>
+<tr>
+<td>diagnosis</td>
+<td>M/B（M：恶性，B：良性）</td>
+</tr>
+<tr>
+<td>radius_mean</td>
+<td>半径平均值</td>
+</tr>
+<tr>
+<td>texture_mean</td>
+<td>文理（灰度值的标准差）平均值</td>
+</tr>
+<tr>
+<td>perimeter_mean</td>
+<td>周长平均值</td>
+</tr>
+<tr>
+<td>area_mean</td>
+<td>面积平均值</td>
+</tr>
+<tr>
+<td>smoothness_mean</td>
+<td>平滑程度（半径内的局部变化）平均值</td>
+</tr>
+<tr>
+<td>compactness_mean</td>
+<td>紧密度（=周长*周长/面积-1.0）平均值</td>
+</tr>
+<tr>
+<td>concavity_mean</td>
+<td>凹度（轮廓凹部的严重程度）平均值</td>
+</tr>
+<tr>
+<td>concave points_mean</td>
+<td>凹缝（轮廓的凹部分）平均值</td>
+</tr>
+<tr>
+<td>symmetry_mean</td>
+<td>对称性平均值</td>
+</tr>
+<tr>
+<td>fractal_dimension_mean</td>
+<td>分形维数（=海岸线近似-1）平均值</td>
+</tr>
+<tr>
+<td>radius_se</td>
+<td>半径标准差</td>
+</tr>
+<tr>
+<td>texture_se</td>
+<td>文理（灰度值的标准差）标准差</td>
+</tr>
+<tr>
+<td>perimeter_se</td>
+<td>周长标准差</td>
+</tr>
+<tr>
+<td>area_se</td>
+<td>面积标准差</td>
+</tr>
+<tr>
+<td>smoothness_se</td>
+<td>平滑程度（半径内的局部变化）标准差</td>
+</tr>
+<tr>
+<td>compactness_se</td>
+<td>紧密度（=周长*周长/面积-1.0）标准差</td>
+</tr>
+<tr>
+<td>concavity_se</td>
+<td>凹度（轮廓凹部的严重程度）标准差</td>
+</tr>
+<tr>
+<td>concave points_se</td>
+<td>凹缝（轮廓的凹部分）标准差</td>
+</tr>
+<tr>
+<td>symmetry_se</td>
+<td>对称性标准差</td>
+</tr>
+<tr>
+<td>fractal_dimension_se</td>
+<td>分形维数（=海岸线近似-1）标准差</td>
+</tr>
+<tr>
+<td>radius_worst</td>
+<td>半径最大值</td>
+</tr>
+<tr>
+<td>texture_worst</td>
+<td>文理（灰度值的标准差）最大值</td>
+</tr>
+<tr>
+<td>perimeter_worst</td>
+<td>周长最大值</td>
+</tr>
+<tr>
+<td>area_worst</td>
+<td>面积最大值</td>
+</tr>
+<tr>
+<td>smoothness_worst</td>
+<td>平滑程度（半径内的局部变化）最大值</td>
+</tr>
+<tr>
+<td>compactness_worst</td>
+<td>紧密度（=周长*周长/面积-1.0）最大值</td>
+</tr>
+<tr>
+<td>concavity_worst</td>
+<td>凹度（轮廓凹部的严重程度）最大值</td>
+</tr>
+<tr>
+<td>concave points_worst</td>
+<td>凹缝（轮廓的凹部分）最大值</td>
+</tr>
+<tr>
+<td>symmetry_worst</td>
+<td>对称性最大值</td>
+</tr>
+<tr>
+<td>fractal_dimension_worst</td>
+<td>分形维数（=海岸线近似-1）最大值</td>
+</tr>
+</tbody></table>
+<p>上面的表格中，mean代表平均值，se代表标准差，worst代表最大值（3个最大值的平均值）。每张图像都计算了相应的特征，得出了这30个特征值（不包括ID字段和分类标识结果字段diagnosis），实际上是10个特征值（radius、texture、perimeter、area、smoothness、compactness、concavity、concave points、symmetry和fractal_dimension_mean）的3个维度，平均、标准差和最大值。这些特征值都保留了4位数字。字段中没有缺失的值。在569个患者中，一共有357个是良性，212个是恶性。</p>
+<p>好了，我们的目标是生成一个乳腺癌诊断的SVM分类器，并计算这个分类器的准确率。首先设定项目的执行流程：</p>
+<ol>
+<li>首先我们需要加载数据源；</li>
+<li>在准备阶段，需要对加载的数据源进行探索，查看样本特征和特征值，这个过程你也可以使用数据可视化，它可以方便我们对数据及数据之间的关系进一步加深了解。然后按照“完全合一”的准则来评估数据的质量，如果数据质量不高就需要做数据清洗。数据清洗之后，你可以做特征选择，方便后续的模型训练；</li>
+<li>在分类阶段，选择核函数进行训练，如果不知道数据是否为线性，可以考虑使用SVC(kernel=‘rbf’) ，也就是高斯核函数的SVM分类器。然后对训练好的模型用测试集进行评估。</li>
+</ol>
+<p>按照上面的流程，我们来编写下代码，加载数据并对数据做部分的探索：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">import pandas as pd</span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import seaborn as sns</span><br><span class="line">from sklearn.model_selection import train_test_split</span><br><span class="line">from sklearn import svm</span><br><span class="line">from sklearn import metrics</span><br><span class="line">from sklearn.preprocessing import StandardScaler</span><br><span class="line"></span><br><span class="line"># 加载数据集，你需要把数据放到目录中</span><br><span class="line">data = pd.read_csv(&quot;./data.csv&quot;)</span><br><span class="line"></span><br><span class="line"># 数据探索</span><br><span class="line"># 因为数据集中列比较多，我们需要把dataframe中的列全部显示出来</span><br><span class="line">pd.set_option(&apos;display.max_columns&apos;, None)</span><br><span class="line">print(data.columns)</span><br><span class="line">print(data.head(5))</span><br><span class="line">print(data.describe())</span><br></pre></td></tr></table></figure>
+
+<p>探索结果如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Index([&apos;id&apos;, &apos;diagnosis&apos;, &apos;radius_mean&apos;, &apos;texture_mean&apos;, &apos;perimeter_mean&apos;,</span><br><span class="line">       &apos;area_mean&apos;, &apos;smoothness_mean&apos;, &apos;compactness_mean&apos;, &apos;concavity_mean&apos;,</span><br><span class="line">       &apos;concave points_mean&apos;, &apos;symmetry_mean&apos;, &apos;fractal_dimension_mean&apos;,</span><br><span class="line">       &apos;radius_se&apos;, &apos;texture_se&apos;, &apos;perimeter_se&apos;, &apos;area_se&apos;, &apos;smoothness_se&apos;,</span><br><span class="line">       &apos;compactness_se&apos;, &apos;concavity_se&apos;, &apos;concave points_se&apos;, &apos;symmetry_se&apos;,</span><br><span class="line">       &apos;fractal_dimension_se&apos;, &apos;radius_worst&apos;, &apos;texture_worst&apos;,</span><br><span class="line">       &apos;perimeter_worst&apos;, &apos;area_worst&apos;, &apos;smoothness_worst&apos;,</span><br><span class="line">       &apos;compactness_worst&apos;, &apos;concavity_worst&apos;, &apos;concave points_worst&apos;,</span><br><span class="line">       &apos;symmetry_worst&apos;, &apos;fractal_dimension_worst&apos;],</span><br><span class="line">      dtype=&apos;object&apos;)</span><br><span class="line">         id diagnosis  radius_mean  texture_mean  perimeter_mean  area_mean  \</span><br><span class="line">0    842302         M        17.99         10.38          122.80     1001.0   </span><br><span class="line">1    842517         M        20.57         17.77          132.90     1326.0   </span><br><span class="line">2  84300903         M        19.69         21.25          130.00     1203.0   </span><br><span class="line">3  84348301         M        11.42         20.38           77.58      386.1   </span><br><span class="line">4  84358402         M        20.29         14.34          135.10     1297.0</span><br></pre></td></tr></table></figure>
+
+<p>下一步，是对数据进行清洗。</p>
+<p>运行结果中，你能看到32个字段里，id是没有实际含义的，可以去掉。diagnosis字段的取值为B或者M，我们可以用0和1来替代。另外其余的30个字段，其实可以分成三组字段，下划线后面的mean、se和worst代表了每组字段不同的度量方式，分别是平均值、标准差和最大值。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 将特征字段分成3组</span><br><span class="line">features_mean= list(data.columns[2:12])</span><br><span class="line">features_se= list(data.columns[12:22])</span><br><span class="line">features_worst=list(data.columns[22:32])</span><br><span class="line"></span><br><span class="line"># 数据清洗</span><br><span class="line"># ID列没有用，删除该列</span><br><span class="line">data.drop(&quot;id&quot;,axis=1,inplace=True)</span><br><span class="line"># 将B良性替换为0，M恶性替换为1</span><br><span class="line">data[&apos;diagnosis&apos;]=data[&apos;diagnosis&apos;].map(&#123;&apos;M&apos;:1,&apos;B&apos;:0&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>然后我们要做特征选择，首先需要观察下features_mean各变量之间的关系，这里我们可以用DataFrame的corr()函数，然后用热力图帮我们可视化呈现。同样，我们也会看整体良性、恶性肿瘤的诊断情况。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 将肿瘤诊断结果可视化</span><br><span class="line">sns.countplot(data[&apos;diagnosis&apos;],label=&quot;Count&quot;)</span><br><span class="line">plt.show()</span><br><span class="line"># 用热力图呈现features_mean字段之间的相关性</span><br><span class="line">corr = data[features_mean].corr()</span><br><span class="line">plt.figure(figsize=(14,14))</span><br><span class="line"># annot=True显示每个方格的数据</span><br><span class="line">sns.heatmap(corr, annot=True)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>具体运行的结果如下：</p>
+<p><img src="/2018/06/10/乳腺癌案例2/1564365378988.png" alt="1564365378988"></p>
+<p><img src="/2018/06/10/乳腺癌案例2/1564365591711.png" alt="1564365591711"></p>
+<p>热力图中对角线上的为单变量自身的相关系数是1。颜色越浅代表相关性越大。分析热力图可以得出：radius_mean、perimeter_mean和area_mean相关性非常大，compactness_mean、concavity_mean、concave_points_mean这三个字段也是相关的，因此我们可以取其中的一个作为代表。</p>
+<p>那么如何进行特征选择呢？</p>
+<p>特征选择的目的是降维，用少量的特征代表数据的特性，这样也可以增强分类器的泛化能力，避免数据过拟合。</p>
+<p>我们能看到mean、se和worst这三组特征是对同一组内容的不同度量方式，我们可以保留mean这组特征，在特征选择中忽略掉se和worst。同时我们能看到mean这组特征中，radius_mean、perimeter_mean、area_mean这三个属性相关性大，compactness_mean、daconcavity_mean、concave points_mean这三个属性相关性大。我们分别从这2类中选择1个属性作为代表，比如radius_mean和compactness_mean。</p>
+<p>这样我们就可以把原来的10个属性缩减为6个属性，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 特征选择</span><br><span class="line">features_remain = [&apos;radius_mean&apos;,&apos;texture_mean&apos;, &apos;smoothness_mean&apos;,&apos;compactness_mean&apos;,&apos;symmetry_mean&apos;, &apos;fractal_dimension_mean&apos;]</span><br></pre></td></tr></table></figure>
+
+<p>对特征进行选择之后，我们就可以准备训练集和测试集：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 抽取30%的数据作为测试集，其余作为训练集</span><br><span class="line">train, test = train_test_split(data, test_size = 0.3)# in this our main data is splitted into train and test</span><br><span class="line"># 抽取特征选择的数值作为训练和测试数据</span><br><span class="line">train_X = train[features_remain]</span><br><span class="line">train_y=train[&apos;diagnosis&apos;]</span><br><span class="line">test_X= test[features_remain]</span><br><span class="line">test_y =test[&apos;diagnosis&apos;]</span><br></pre></td></tr></table></figure>
+
+<p>在正式开始建模前，需要对数据进行规范化处理。采用Z-Score规范化数据，保证每个特征维度的数据均值为0，方差为1，具体代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 采用Z-Score规范化数据，保证每个特征维度的数据均值为0，方差为1</span><br><span class="line">ss = StandardScaler()</span><br><span class="line">train_X = ss.fit_transform(train_X)</span><br><span class="line">test_X = ss.transform(test_X)</span><br></pre></td></tr></table></figure>
+
+<p>最后，可以用SVM模型对规范化后的数据进行训练和预测，具体如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 创建SVM分类器</span><br><span class="line">model = svm.SVC()</span><br><span class="line"># 用训练集做训练</span><br><span class="line">model.fit(train_X,train_y)</span><br><span class="line"># 用测试集做预测</span><br><span class="line">prediction=model.predict(test_X)</span><br><span class="line">print(&apos;准确率: &apos;, metrics.accuracy_score(prediction,test_y))</span><br></pre></td></tr></table></figure>
+
+<p>得到的结果如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">准确率:  0.9005847953216374</span><br></pre></td></tr></table></figure>
+
+<p>准确率大于90%，说明模型训练的结果还不错。</p>
+
+                    
+                    <!-- Tags Bottom -->
+                    
+
+                    <!-- Comments -->
+                    
+
+
+
+                </div>
+                <div class="fl w-100 w-30-l center fw3 lh-copy pl4-ns tl black-50">
+                    
+                    <hr class="dn-l mw4 black-50 mt5" />
+                    
+                    <!-- Widget 1: About -->
+                    <div class="mt5 mt0-l">
+    <article class="dt db-l mw8 mw8-m mw5-ns center ml0-l bg-white mv3">
+        <div class="dn dtc-m db-l v-mid tc pr4 pr0-l" style="min-width: 6rem;">
+            <img src="http://tachyons.io/img/avatar_1.jpg" class="mb4-l br-100 h3 w3 h4-l w4-l dib" title="John Doe">
+        </div>
+        <div class="dtc db-l v-mid lh-copy measure center f6 black-50 tj">
+            My name is Alvin Qin and this is my blog.<br>I am a data mining  engineer with a strong front-end focus.<br>
+        </div>
+    </article>
+</div>
+
+                    <hr class="dn-l mw4 black-50 mt5" />
+                    
+                    <!-- Widget 2: Categories -->
+                    
+
+                    <!-- Widget 3: Recent Posts -->
+                    <div class="mt5 tc tl-l">
+    <h3>Recent Posts</h3>
+    
+        <p>
+            <a href="/2018/09/10/credit-default/">信用卡违约率的实战分析模型</a>
+        </p>
+    
+        <p>
+            <a href="/2018/08/22/credit/">利用GridSearchCV工具优化模型的参数</a>
+        </p>
+    
+        <p>
+            <a href="/2018/07/20/em聚类/">如何理解EM聚类的原理</a>
+        </p>
+    
+        <p>
+            <a href="/2018/06/10/乳腺癌案例2/">利用SVM分类器进行乳腺癌的检测（2）</a>
+        </p>
+    
+        <p>
+            <a href="/2018/05/29/svm分类器/">利用SVM分类器进行乳腺癌的检测（1）</a>
+        </p>
+    
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Footer -->
+<div class="bg-1 ph2 ph5-ns pv5">
+        <div class="mv8">
+            <div class="center tc">
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://twitter.com/?lang=en" target="_blank">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://www.facebook.com/" target="_blank">
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://dribbble.com/" target="_blank">
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://github.com/klugjo/hexo-theme-anodyne" target="_blank">
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://plus.google.com/" target="_blank">
+                            <i class="fa fa-google-plus"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://www.behance.net/" target="_blank">
+                            <i class="fa fa-behance"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://500px.com/" target="_blank">
+                            <i class="fa fa-500px"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="mailto:test@example.com" target="_blank">
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="/#" target="_blank">
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </div>
+                
+            </div>
+            <div class="f6 f5-ns center tc white pt5 fw3">
+                @Untitled. All right reserved | Design & Hexo <a class="link dim white" href="http://www.codeblocq.com/">Jonathan Klughertz</a>
+            </div>
+        </div>
+    </div>
+
+<!-- After Footer -->
+<!-- Disqus Comments -->
+
+
+
+</body>
+
+</html>
