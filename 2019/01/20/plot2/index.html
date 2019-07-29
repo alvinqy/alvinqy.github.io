@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="条形图
+如果说通过直方图可以看到变量的数值分布，那么条形图可以帮我们查看类别的特征。在条形图中，长条形的长度表示类别的频数，宽度表示类别。
+在Matplotlib中，我们使用plt.bar(x, height)函数，其中参数x代表x轴的位置序列，height是y轴的数值序列，也就是柱子的高度。
+在S">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="John Doe">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="利用Python进行数据可视化（2）">
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Hexo">
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article">
+    
+
+    <!--Page Cover-->
+    
+
+    <meta name="twitter:card" content="summary">
+    
+
+    <!-- Title -->
+    
+    <title>利用Python进行数据可视化（2） - Hexo</title>
+
+    <!-- Tachyons Core CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/tachyons/css/tachyons.min.css">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Google Analytics -->
+    
+
+
+</head>
+
+
+<body>
+
+<!-- Main Content -->
+<!-- Banner -->
+<!-- Banner -->
+<div class="w-100 bg-1 ph5-ns ph3 text-light">
+    
+    <nav class="db dt-l w-100 mw8 center border-box pv3">
+        <a class="db dtc-l v-mid link dim w-100 w-25-l tc tl-l mb2 mb0-l white" href="/" title="Hexo">
+            <img src="http://www.codeblocq.com/assets/projects/hexo-theme-anodyne/assets/anodyne.svg" class="dib h3" alt="Hexo">
+        </a>
+        <div class="db dtc-l v-mid w-100 w-75-l tc tr-l">
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/" 
+                    title="Home">
+                    Home
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/archives" 
+                    title="Archives">
+                    Archives
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/tags" 
+                    title="Tags">
+                    Tags
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/categories" 
+                    title="Categories">
+                    Categories
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/about.html" 
+                    title="About">
+                    About
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/contact.html" 
+                    title="Contact">
+                    Contact
+                </a>
+            
+        </div>
+    </nav>
+
+    <!-- Title -->
+    <div class="w-100 mw8 center vh-40 dt">
+        <div class="dtc v-mid white">
+            <h1 class="f1-l f2-m tc tc-m tl-ns">利用Python进行数据可视化（2）</h1>
+            <p class="f4 fw3 pab-100px tc tc-m tl-ns">2019-01-20</p>
+        </div>
+    </div>
+
+    <!-- Icon -->
+    <div class="relative w-100 mw8 center white dn dn-m db-ns">
+        <i class="header-icon fa fa-file-text-o"></i>
+    </div>
+</div>
+
+<!-- Content -->
+<div class="w-100 ph2 ph4-m ph5-l mv5 mv6-l">
+    <div class="content">
+        <div class="mw8 center">
+            <div class="cf">
+                <div class="fl w-100 w-70-l mw7 left fw3 lh-copy pr4-ns pr0-m post-content">
+                    <!-- Tags Vertical -->
+                    
+
+                    <!-- Main Post Content -->
+                    <p><strong>条形图</strong></p>
+<p>如果说通过直方图可以看到变量的数值分布，那么条形图可以帮我们查看类别的特征。在条形图中，长条形的长度表示类别的频数，宽度表示类别。</p>
+<p>在Matplotlib中，我们使用plt.bar(x, height)函数，其中参数x代表x轴的位置序列，height是y轴的数值序列，也就是柱子的高度。</p>
+<p>在Seaborn中，我们使用sns.barplot(<em>x=None, y=None, data=None</em>)函数。其中参数data为DataFrame类型，x、y是data中的变量。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">x =[&quot;cat1&quot;,&quot;cat2&quot;,&quot;cat3&quot;,&quot;cat4&quot;,&quot;cat5&quot;]</span><br><span class="line">y =[5,4,8,12,7]</span><br><span class="line">plt.bar(x,y)</span><br><span class="line">plt.show()</span><br><span class="line">sns.barplot(x,y)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>我们创建了x、y两个数组，分别代表类别和类别的频数，然后用Matplotlib和Seaborn进行条形图的显示，结果如下：</p>
+<p><img src="/2019/01/20/plot2/1564401614271.png" alt="1564401614271"></p>
+<p><img src="/2019/01/20/plot2/1564401643365.png" alt="1564401643365"></p>
+<p><strong>箱线图</strong></p>
+<p>箱线图，又称盒式图，它是在1977年提出的，由五个数值点组成：最大值(max)、最小值(min)、中位数(median)和上下四分位数(Q3, Q1)。它可以帮我们分析出数据的差异性、离散程度和异常值等。</p>
+<p>在Matplotlib中，我们使用plt.boxplot(x, labels=None)函数，其中参数x代表要绘制箱线图的数据，labels是缺省值，可以为箱线图添加标签。</p>
+<p>在Seaborn中，我们使用sns.boxplot(<em>x=None, y=None, data=None</em>)函数。其中参数data为DataFrame类型，x、y是data中的变量。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">data = np.random.normal(size=(10,4))</span><br><span class="line">labels =[&apos;A&apos;,&apos;B&apos;,&apos;C&apos;,&apos;D&apos;]</span><br><span class="line">plt.boxplot(data,labels=labels)</span><br><span class="line">plt.show()</span><br><span class="line">df = pd.DataFrame(data,columns=labels)</span><br><span class="line">sns.boxplot(data=df)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>这段代码中，我生成0-1之间的10*4维度数据，然后分别用Matplotlib和Seaborn进行箱线图的展示，结果如下。</p>
+<p><img src="/2019/01/20/plot2/1564401760747.png" alt="1564401760747"></p>
+<p><img src="/2019/01/20/plot2/1564401788850.png" alt="1564401788850"></p>
+<p><strong>饼图</strong></p>
+<p>饼图是常用的统计学模块，可以显示每个部分大小与总和之间的比例。在Python数据可视化中，它用的不算多。我们主要采用Matplotlib的pie函数实现它。</p>
+<p>在Matplotlib中，我们使用plt.pie(x, labels=None)函数，其中参数x代表要绘制饼图的数据，labels是缺省值，可以为饼图添加标签。</p>
+<p>这里我设置了lables数组，分别代表高中、本科、硕士、博士和其他几种学历的分类标签。nums代表这些学历对应的人数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">nums = [25,37,33,37,6]</span><br><span class="line">labels =[&quot;high_scholl&quot;,&quot;Bachelor&quot;,&quot;Master&quot;,&quot;Ph.d&quot;,&quot;others&quot;]</span><br><span class="line">plt.pie(x=nums,labels=labels)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>通过Matplotlib的pie函数，我们可以得出下面的饼图：</p>
+<p><img src="/2019/01/20/plot2/1564401904096.png" alt="1564401904096"></p>
+<p><strong>热力图</strong></p>
+<p>热力图，英文叫heat map，是一种矩阵表示方法，其中矩阵中的元素值用颜色来代表，不同的颜色代表不同大小的值。通过颜色就能直观地知道某个位置上数值的大小。另外你也可以将这个位置上的颜色，与数据集中的其他位置颜色进行比较。</p>
+<p>热力图是一种非常直观的多元变量分析方法。</p>
+<p>我们一般使用Seaborn中的sns.heatmap(data)函数，其中data代表需要绘制的热力图数据。</p>
+<p>这里我们使用Seaborn中自带的数据集flights，该数据集记录了1949年到1960年期间，每个月的航班乘客的数量。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">flights = sns.load_dataset(&quot;flights&quot;)</span><br><span class="line">data = flights.pivot(&quot;year&quot;,&quot;month&quot;,&quot;passengers&quot;)</span><br><span class="line"># print(data.head())</span><br><span class="line">sns.heatmap(data)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>通过seaborn的heatmap函数，我们可以观察到不同年份，不同月份的乘客数量变化情况，其中颜色越浅的代表乘客数量越多，如下图所示：</p>
+<p><img src="/2019/01/20/plot2/1564402034035.png" alt="1564402034035"></p>
+<p><strong>蜘蛛图</strong></p>
+<p>蜘蛛图是一种显示一对多关系的方法。在蜘蛛图中，一个变量相对于另一个变量的显著性是清晰可见的。</p>
+<p>假设我们想要给王者荣耀的玩家做一个战力图，指标一共包括推进、KDA、生存、团战、发育和输出。那该如何做呢？</p>
+<p>这里我们需要使用Matplotlib来进行画图，首先设置两个数组：labels和stats。他们分别保存了这些属性的名称和属性值。</p>
+<p>因为蜘蛛图是一个圆形，你需要计算每个坐标的角度，然后对这些数值进行设置。当画完最后一个点后，需要与第一个点进行连线。</p>
+<p>因为需要计算角度，所以我们要准备angles数组；又因为需要设定统计结果的数值，所以我们要设定stats数组。并且需要在原有angles和stats数组上增加一位，也就是添加数组的第一个元素。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">labels=np.array([u&quot;推进&quot;,&quot;KDA&quot;,u&quot;生存&quot;,u&quot;团战&quot;,u&quot;发育&quot;,u&quot;输出&quot;])</span><br><span class="line">stats=[83, 61, 95, 67, 76, 88]</span><br><span class="line"># 画图数据准备，角度、状态值</span><br><span class="line">angles=np.linspace(0, 2*np.pi, len(labels), endpoint=False)</span><br><span class="line">stats=np.concatenate((stats,[stats[0]]))</span><br><span class="line">angles=np.concatenate((angles,[angles[0]]))</span><br><span class="line"># 用Matplotlib画蜘蛛图</span><br><span class="line">fig = plt.figure()</span><br><span class="line">ax = fig.add_subplot(111, polar=True)</span><br><span class="line">ax.plot(angles, stats, &apos;o-&apos;, linewidth=2)</span><br><span class="line">ax.fill(angles, stats, alpha=0.25)</span><br><span class="line"># 设置中文字体</span><br><span class="line">font = FontProperties(fname=r&quot;C:\Windows\Fonts\simhei.ttf&quot;, size=14)</span><br><span class="line">ax.set_thetagrids(angles * 180/np.pi, labels, FontProperties=font)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>代码中flt.figure是创建一个空白的figure对象，这样做的目的相当于画画前先准备一个空白的画板。然后add_subplot(111)可以把画板划分成1行1列。再用ax.plot和ax.fill进行连线以及给图形上色。最后我们在相应的位置上显示出属性名。</p>
+<p><img src="/2019/01/20/plot2/1564402530705.png" alt="1564402530705"></p>
+
+                    
+                    <!-- Tags Bottom -->
+                    
+
+                    <!-- Comments -->
+                    
+
+
+
+                </div>
+                <div class="fl w-100 w-30-l center fw3 lh-copy pl4-ns tl black-50">
+                    
+                    <hr class="dn-l mw4 black-50 mt5" />
+                    
+                    <!-- Widget 1: About -->
+                    <div class="mt5 mt0-l">
+    <article class="dt db-l mw8 mw8-m mw5-ns center ml0-l bg-white mv3">
+        <div class="dn dtc-m db-l v-mid tc pr4 pr0-l" style="min-width: 6rem;">
+            <img src="http://tachyons.io/img/avatar_1.jpg" class="mb4-l br-100 h3 w3 h4-l w4-l dib" title="John Doe">
+        </div>
+        <div class="dtc db-l v-mid lh-copy measure center f6 black-50 tj">
+            My name is Alvin Qin and this is my blog.<br>I am a data mining  engineer with a strong front-end focus.<br>
+        </div>
+    </article>
+</div>
+
+                    <hr class="dn-l mw4 black-50 mt5" />
+                    
+                    <!-- Widget 2: Categories -->
+                    
+
+                    <!-- Widget 3: Recent Posts -->
+                    <div class="mt5 tc tl-l">
+    <h3>Recent Posts</h3>
+    
+        <p>
+            <a href="/2019/01/20/plot2/">利用Python进行数据可视化（2）</a>
+        </p>
+    
+        <p>
+            <a href="/2018/12/27/plot1/">利用Python进行数据可视化（1）</a>
+        </p>
+    
+        <p>
+            <a href="/2018/11/15/linear/">线性回归的正则化</a>
+        </p>
+    
+        <p>
+            <a href="/2018/10/20/userpotrait/">对数据标签化的认识</a>
+        </p>
+    
+        <p>
+            <a href="/2018/09/10/credit-default/">信用卡违约率的实战分析模型</a>
+        </p>
+    
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Footer -->
+<div class="bg-1 ph2 ph5-ns pv5">
+        <div class="mv8">
+            <div class="center tc">
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://twitter.com/?lang=en" target="_blank">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://www.facebook.com/" target="_blank">
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://dribbble.com/" target="_blank">
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://github.com/klugjo/hexo-theme-anodyne" target="_blank">
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://plus.google.com/" target="_blank">
+                            <i class="fa fa-google-plus"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://www.behance.net/" target="_blank">
+                            <i class="fa fa-behance"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://500px.com/" target="_blank">
+                            <i class="fa fa-500px"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="mailto:test@example.com" target="_blank">
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="/#" target="_blank">
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </div>
+                
+            </div>
+            <div class="f6 f5-ns center tc white pt5 fw3">
+                @Untitled. All right reserved | Design & Hexo <a class="link dim white" href="http://www.codeblocq.com/">Jonathan Klughertz</a>
+            </div>
+        </div>
+    </div>
+
+<!-- After Footer -->
+<!-- Disqus Comments -->
+
+
+
+</body>
+
+</html>

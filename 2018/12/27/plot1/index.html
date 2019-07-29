@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="如果想要用Python进行数据分析，就需要在项目初期开始进行探索性的数据分析，这样对数据有一定的了解。其中最直观的就是采用数据可视化技术，这样，数据不仅一目了然，而且更容易被解读。同样在数据分析得到结果之后，我们还需要用到可视化技术，把最终的结果呈现出来。
+可视化视图都有哪些？按照数据之间的关系，我">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="John Doe">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="利用Python进行数据可视化（1）">
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Hexo">
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article">
+    
+
+    <!--Page Cover-->
+    
+
+    <meta name="twitter:card" content="summary">
+    
+
+    <!-- Title -->
+    
+    <title>利用Python进行数据可视化（1） - Hexo</title>
+
+    <!-- Tachyons Core CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/tachyons/css/tachyons.min.css">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Google Analytics -->
+    
+
+
+</head>
+
+
+<body>
+
+<!-- Main Content -->
+<!-- Banner -->
+<!-- Banner -->
+<div class="w-100 bg-1 ph5-ns ph3 text-light">
+    
+    <nav class="db dt-l w-100 mw8 center border-box pv3">
+        <a class="db dtc-l v-mid link dim w-100 w-25-l tc tl-l mb2 mb0-l white" href="/" title="Hexo">
+            <img src="http://www.codeblocq.com/assets/projects/hexo-theme-anodyne/assets/anodyne.svg" class="dib h3" alt="Hexo">
+        </a>
+        <div class="db dtc-l v-mid w-100 w-75-l tc tr-l">
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/" 
+                    title="Home">
+                    Home
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/archives" 
+                    title="Archives">
+                    Archives
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/tags" 
+                    title="Tags">
+                    Tags
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/categories" 
+                    title="Categories">
+                    Categories
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/about.html" 
+                    title="About">
+                    About
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/contact.html" 
+                    title="Contact">
+                    Contact
+                </a>
+            
+        </div>
+    </nav>
+
+    <!-- Title -->
+    <div class="w-100 mw8 center vh-40 dt">
+        <div class="dtc v-mid white">
+            <h1 class="f1-l f2-m tc tc-m tl-ns">利用Python进行数据可视化（1）</h1>
+            <p class="f4 fw3 pab-100px tc tc-m tl-ns">2018-12-27</p>
+        </div>
+    </div>
+
+    <!-- Icon -->
+    <div class="relative w-100 mw8 center white dn dn-m db-ns">
+        <i class="header-icon fa fa-file-text-o"></i>
+    </div>
+</div>
+
+<!-- Content -->
+<div class="w-100 ph2 ph4-m ph5-l mv5 mv6-l">
+    <div class="content">
+        <div class="mw8 center">
+            <div class="cf">
+                <div class="fl w-100 w-70-l mw7 left fw3 lh-copy pr4-ns pr0-m post-content">
+                    <!-- Tags Vertical -->
+                    
+
+                    <!-- Main Post Content -->
+                    <p>如果想要用Python进行数据分析，就需要在项目初期开始进行探索性的数据分析，这样对数据有一定的了解。其中最直观的就是采用数据可视化技术，这样，数据不仅一目了然，而且更容易被解读。同样在数据分析得到结果之后，我们还需要用到可视化技术，把最终的结果呈现出来。</p>
+<h2 id="可视化视图都有哪些？"><a href="#可视化视图都有哪些？" class="headerlink" title="可视化视图都有哪些？"></a>可视化视图都有哪些？</h2><p>按照数据之间的关系，我们可以把可视化视图划分为4类，它们分别是比较、联系、构成和分布。我来简单介绍下这四种关系的特点：</p>
+<p><strong>比较</strong>：比较数据间各类别的关系，或者是它们随着时间的变化趋势，比如折线图；</p>
+<p><strong>联系：</strong>查看两个或两个以上变量之间的关系，比如散点图；</p>
+<p><strong>构成：</strong>每个部分占整体的百分比，或者是随着时间的百分比变化，比如饼图；</p>
+<p><strong>分布</strong>：关注单个变量，或者多个变量的分布情况，比如直方图。</p>
+<p>同样，按照变量的个数，我们可以把可视化视图划分为单变量分析和多变量分析。</p>
+<p>单变量分析指的是一次只关注一个变量。比如我们只关注“身高”这个变量，来看身高的取值分布，而暂时忽略其他变量。</p>
+<p>多变量分析可以让你在一张图上可以查看两个以上变量的关系。比如“身高”和“年龄”，你可以理解是同一个人的两个参数，这样在同一张图中可以看到每个人的“身高”和“年龄”的取值，从而分析出来这两个变量之间是否存在某种联系。</p>
+<p>可视化的视图可以说是分门别类，多种多样，今天我主要介绍常用的10种视图，这些视图包括了散点图、折线图、直方图、条形图、箱线图、饼图、热力图、蜘蛛图、二元变量分布和成对关系。</p>
+<p><strong>散点图</strong></p>
+<p>散点图的英文叫做scatter plot，它将两个变量的值显示在二维坐标中，非常适合展示两个变量之间的关系。当然，除了二维的散点图，我们还有三维的散点图。</p>
+<p>我在上一讲中给你简单介绍了下Matplotlib这个工具，在Matplotlib中，我们经常会用到pyplot这个工具包，它包括了很多绘图函数，类似Matlab的绘图框架。在使用前你需要进行引用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import matplotlib.pyplot as plt</span><br></pre></td></tr></table></figure>
+
+<p>在工具包引用后，画散点图，需要使用plt.scatter(x, y, marker=None)函数。x、y 是坐标，marker代表了标记的符号。比如“x”、“&gt;”或者“o”。选择不同的marker，呈现出来的符号样式也会不同。</p>
+<p>除了Matplotlib外，你也可以使用Seaborn进行散点图的绘制。在使用Seaborn前，也需要进行包引用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import seaborn as sns</span><br></pre></td></tr></table></figure>
+
+<p>在引用seaborn工具包之后，就可以使用seaborn工具包的函数了。如果想要做散点图，可以直接使用sns.jointplot(x, y, data=None, kind=‘scatter’)函数。其中x、y是data中的下标。data就是我们要传入的数据，一般是DataFrame类型。kind这类我们取scatter，代表散点的意思。当然kind还可以取其他值，这个我在后面的视图中会讲到，不同的kind代表不同的视图绘制方式。</p>
+<p>接下来，让我们来模拟下，假设我们的数据是随机的1000个点。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">N = 1000</span><br><span class="line">x= np.random.randn(N)</span><br><span class="line">y = np.random.randn(N)</span><br><span class="line">plt.scatter(x,y,marker=&apos;x&apos;)</span><br><span class="line">plt.show()</span><br><span class="line">df = pd.DataFrame(&#123;&quot;x&quot;:x,&quot;y&quot;:y&#125;)</span><br><span class="line">sns.jointplot(x=&quot;x&quot;,y=&quot;y&quot;,data=df,kind=&quot;scatter&quot;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>运行一下上面的代码，就可以看到下面的视图（第一张图为Matplotlib绘制的，第二张图为Seaborn绘制的）。可以看到Matplotlib和Seaborn的视图呈现还是有差别的。Matplotlib默认情况下呈现出来的是个长方形。而Seaborn呈现的是个正方形，而且不仅显示出了散点图，还给了这两个变量的分布情况。</p>
+<p><img src="/2018/12/27/plot1/1564400497041.png" alt="Matplotlib绘制"></p>
+<p><img src="/2018/12/27/plot1/1564400583685.png" alt="Seaborn绘制"></p>
+<p><strong>折线图</strong></p>
+<p>折线图可以用来表示数据随着时间变化的趋势。</p>
+<p>在Matplotlib中，我们可以直接使用plt.plot()函数，当然需要提前把数据按照x轴的大小进行排序，要不画出来的折线图就无法按照x轴递增的顺序展示。</p>
+<p>在Seaborn中，我们使用sns.lineplot (x, y, data=None)函数。其中x、y是data中的下标。data就是我们要传入的数据，一般是DataFrame类型。</p>
+<p>这里我们设置了x、y的数组。x数组代表时间（年），y数组我们随便设置几个取值。下面是详细的代码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">x = [2010,2011,2012,2013,2014,2015,2016,2017,2018,2019]</span><br><span class="line">y = [5,3,6,20,17,16,19,30,32,35]</span><br><span class="line">plt.plot(x,y)</span><br><span class="line">plt.show()</span><br><span class="line">df = pd.DataFrame(&#123;&quot;x&quot;:x,&quot;y&quot;:y&#125;)</span><br><span class="line">sns.lineplot(x=x,y=y,data=df)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>然后我们分别用Matplotlib和Seaborn进行画图，可以得到下面的图示。你可以看出这两个图示的结果是完全一样的，只是在seaborn中标记了x和y轴的含义。</p>
+<p><img src="/2018/12/27/plot1/1564400800076.png" alt="Matplotlib绘制"></p>
+<p><img src="/2018/12/27/plot1/1564400832162.png" alt="Seaborn绘制"></p>
+<p><strong>直方图</strong></p>
+<p>直方图是比较常见的视图，它是把横坐标等分成了一定数量的小区间，这个小区间也叫作“箱子”，然后在每个“箱子”内用矩形条（bars）展示该箱子的箱子数（也就是y值），这样就完成了对数据集的直方图分布的可视化。</p>
+<p>在Matplotlib中，我们使用plt.hist(x, bins=10)函数，其中参数x是一维数组，bins代表直方图中的箱子数量，默认是10。</p>
+<p>在Seaborn中，我们使用sns.distplot(x, bins=10, kde=True)函数。其中参数x是一维数组，bins代表直方图中的箱子数量，kde代表显示核密度估计，默认是True，我们也可以把kde设置为False，不进行显示。核密度估计是通过核函数帮我们来估计概率密度的方法。</p>
+<p>以下一段绘制直方图的代码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">a = np.random.randn(100)</span><br><span class="line">s = pd.Series(a)</span><br><span class="line">print(a)</span><br><span class="line">print(s)</span><br><span class="line">plt.hist(s)</span><br><span class="line">plt.show()</span><br><span class="line">sns.distplot(s,kde=False)</span><br><span class="line">plt.show()</span><br><span class="line">sns.distplot(s,kde=True)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>我们创建一个随机的一维数组，然后分别用Matplotlib和Seaborn进行直方图的显示，结果如下，你可以看出，没有任何差别，其中最后一张图就是kde默认为Ture时的显示情况。</p>
+<p><img src="/2018/12/27/plot1/1564401022228.png" alt="1564401022228"></p>
+<p><img src="/2018/12/27/plot1/1564401107570.png" alt="1564401107570"></p>
+<p><img src="/2018/12/27/plot1/1564401145816.png" alt="1564401145816"></p>
+
+                    
+                    <!-- Tags Bottom -->
+                    
+
+                    <!-- Comments -->
+                    
+
+
+
+                </div>
+                <div class="fl w-100 w-30-l center fw3 lh-copy pl4-ns tl black-50">
+                    
+                    <hr class="dn-l mw4 black-50 mt5" />
+                    
+                    <!-- Widget 1: About -->
+                    <div class="mt5 mt0-l">
+    <article class="dt db-l mw8 mw8-m mw5-ns center ml0-l bg-white mv3">
+        <div class="dn dtc-m db-l v-mid tc pr4 pr0-l" style="min-width: 6rem;">
+            <img src="http://tachyons.io/img/avatar_1.jpg" class="mb4-l br-100 h3 w3 h4-l w4-l dib" title="John Doe">
+        </div>
+        <div class="dtc db-l v-mid lh-copy measure center f6 black-50 tj">
+            My name is Alvin Qin and this is my blog.<br>I am a data mining  engineer with a strong front-end focus.<br>
+        </div>
+    </article>
+</div>
+
+                    <hr class="dn-l mw4 black-50 mt5" />
+                    
+                    <!-- Widget 2: Categories -->
+                    
+
+                    <!-- Widget 3: Recent Posts -->
+                    <div class="mt5 tc tl-l">
+    <h3>Recent Posts</h3>
+    
+        <p>
+            <a href="/2019/01/20/plot2/">利用Python进行数据可视化（2）</a>
+        </p>
+    
+        <p>
+            <a href="/2018/12/27/plot1/">利用Python进行数据可视化（1）</a>
+        </p>
+    
+        <p>
+            <a href="/2018/11/15/linear/">线性回归的正则化</a>
+        </p>
+    
+        <p>
+            <a href="/2018/10/20/userpotrait/">对数据标签化的认识</a>
+        </p>
+    
+        <p>
+            <a href="/2018/09/10/credit-default/">信用卡违约率的实战分析模型</a>
+        </p>
+    
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Footer -->
+<div class="bg-1 ph2 ph5-ns pv5">
+        <div class="mv8">
+            <div class="center tc">
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://twitter.com/?lang=en" target="_blank">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://www.facebook.com/" target="_blank">
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://dribbble.com/" target="_blank">
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://github.com/klugjo/hexo-theme-anodyne" target="_blank">
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://plus.google.com/" target="_blank">
+                            <i class="fa fa-google-plus"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://www.behance.net/" target="_blank">
+                            <i class="fa fa-behance"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://500px.com/" target="_blank">
+                            <i class="fa fa-500px"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="mailto:test@example.com" target="_blank">
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="/#" target="_blank">
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </div>
+                
+            </div>
+            <div class="f6 f5-ns center tc white pt5 fw3">
+                @Untitled. All right reserved | Design & Hexo <a class="link dim white" href="http://www.codeblocq.com/">Jonathan Klughertz</a>
+            </div>
+        </div>
+    </div>
+
+<!-- After Footer -->
+<!-- Disqus Comments -->
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="今天的内容是线性回归的正则化扩展。正则化能有效的解决过拟合（overfitting）的问题。
+本质上讲，过拟合就是模型过于复杂，复杂到削弱了它的泛化性能。由于训练数据的数目是有限的，因此我们总是可以通过增加参数的数量来提升模型的复杂度，进而降低训练误差。然而，学习的本领越专精，应用的口径就越狭窄，过">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="John Doe">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="线性回归的正则化">
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Hexo">
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article">
+    
+
+    <!--Page Cover-->
+    
+
+    <meta name="twitter:card" content="summary">
+    
+
+    <!-- Title -->
+    
+    <title>线性回归的正则化 - Hexo</title>
+
+    <!-- Tachyons Core CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/tachyons/css/tachyons.min.css">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Google Analytics -->
+    
+
+
+</head>
+
+
+<body>
+
+<!-- Main Content -->
+<!-- Banner -->
+<!-- Banner -->
+<div class="w-100 bg-1 ph5-ns ph3 text-light">
+    
+    <nav class="db dt-l w-100 mw8 center border-box pv3">
+        <a class="db dtc-l v-mid link dim w-100 w-25-l tc tl-l mb2 mb0-l white" href="/" title="Hexo">
+            <img src="http://www.codeblocq.com/assets/projects/hexo-theme-anodyne/assets/anodyne.svg" class="dib h3" alt="Hexo">
+        </a>
+        <div class="db dtc-l v-mid w-100 w-75-l tc tr-l">
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/" 
+                    title="Home">
+                    Home
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/archives" 
+                    title="Archives">
+                    Archives
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/tags" 
+                    title="Tags">
+                    Tags
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/categories" 
+                    title="Categories">
+                    Categories
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/about.html" 
+                    title="About">
+                    About
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" 
+                    href="/contact.html" 
+                    title="Contact">
+                    Contact
+                </a>
+            
+        </div>
+    </nav>
+
+    <!-- Title -->
+    <div class="w-100 mw8 center vh-40 dt">
+        <div class="dtc v-mid white">
+            <h1 class="f1-l f2-m tc tc-m tl-ns">线性回归的正则化</h1>
+            <p class="f4 fw3 pab-100px tc tc-m tl-ns">2018-11-15</p>
+        </div>
+    </div>
+
+    <!-- Icon -->
+    <div class="relative w-100 mw8 center white dn dn-m db-ns">
+        <i class="header-icon fa fa-file-text-o"></i>
+    </div>
+</div>
+
+<!-- Content -->
+<div class="w-100 ph2 ph4-m ph5-l mv5 mv6-l">
+    <div class="content">
+        <div class="mw8 center">
+            <div class="cf">
+                <div class="fl w-100 w-70-l mw7 left fw3 lh-copy pr4-ns pr0-m post-content">
+                    <!-- Tags Vertical -->
+                    
+
+                    <!-- Main Post Content -->
+                    <p>今天的内容是线性回归的正则化扩展。正则化能有效的解决过拟合（overfitting）的问题。</p>
+<p>本质上讲，<strong>过拟合就是模型过于复杂，复杂到削弱了它的泛化性能</strong>。由于训练数据的数目是有限的，因此我们总是可以通过增加参数的数量来提升模型的复杂度，进而降低训练误差。然而，学习的本领越专精，应用的口径就越狭窄，过于复杂的模型能在训练集上获得很好的拟合效果，但是在测试集上拟合效果很差，即模型的范化性能差。</p>
+<p>正则化（regularization）是用于抑制过拟合的方法的统称，它<strong>通过动态调整估计参数的取值来降低模型的复杂度，以偏差的增加为代价来换取方差的下降</strong>。这是因为当一些参数足够小时，它们对应的属性对输出结果的贡献就会微乎其微，这在实质上去除了非相关属性的影响。</p>
+<p>在线性回归里，最常见的正则化方式就是在损失函数（loss function）中添加<strong>正则化项</strong>（regularizer），而添加的正则化项 $R(\lambda)$ 往往是待估计参数的 $p$- 范数。将均方误差和参数的范数之和作为一个整体来进行约束优化，相当于额外添加了一重关于参数的限制条件，避免大量参数同时出现较大的取值。由于正则化的作用通常是让参数估计值的幅度下降，因此在统计学中它也被称为<strong>系数收缩方法</strong>（shrinkage method）。</p>
+<p>将正则化项应用在基于最小二乘法的线性回归中，就可以得到<strong>线性回归的不同修正</strong>（penalized linear regression）。当正则化项为 2- 范数的平方时，修正结果就是<strong>岭回归</strong>；当正则化项为 1- 范数时，修正结果就是<strong>LASSO</strong>。岭回归和 LASSO 具有不同的几何意义。下图给出的是岭回归（左）和 LASSO（右）的可视化表示。图中的蓝色点表示普通最小二乘法计算出的最优参数，外面的每个蓝色圆圈都是损失函数的等值线，每个圆圈上的误差都是相等的，从里到外误差则越来越大。</p>
+<p><img src="/2018/11/15/linear/1564397575185.png" alt="1564397575185"></p>
+<p>红色边界表示的则是正则化项对参数可能取值的约束，这里假定了未知参数的数目是两个。岭回归中要求两个参数的平方和小于某个固定的取值，即 $w_1 ^2 + w_2 ^ 2 &lt; t$，因此解空间就是浅色区域代表的圆形；而 LASSO 要求两个参数的绝对值之和小于某个固定的取值，即 $|w_1| + |w_2| &lt; t$，因此解空间就是浅色区域代表的方形。</p>
+<p>圆形的岭回归边界是平滑的曲线，误差等值线可能在任何位置和边界相切。相形之下，方形的 LASSO 边界是有棱有角的直线，因此切点最可能出现在方形的顶点上，这就意味着某个参数的取值被衰减为 0。这张图形象地说明了岭回归和 LASSO 的区别。岭回归的作用是衰减不同属性的权重，让所有属性一起向圆心收拢；LASSO 则直接将某些属性的权重降低为 0，完成的是属性过滤的任务。</p>
+<p>在编程中，很多第三方的 Python 库都可以直接实现不同的正则化处理。在 Scikit-learn 库中，线性模型模块 linear_model 中的 Lasso 类和 Ridge 类就可以实现 $l_1$ 正则化和 $l_2$ 正则化。使用这两个类对前面文章中拟合出来的多元线性回归模型进行正则化处理，将两种算法中的正则化项参数均设置为 $\lambda = 0.05$，就可以得到修正后的结果，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">import pandas as pd</span><br><span class="line">import numpy as np</span><br><span class="line">import scipy as sp</span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">from sklearn import linear_model,metrics</span><br><span class="line"></span><br><span class="line">stats = pd.read_csv(&apos;../mlin40-master/regression.csv&apos;,sep=&apos;\t&apos;)</span><br><span class="line">point = stats.iloc[:,4] / 38</span><br><span class="line">positional_rating = stats.iloc[:,[0,1,2,3]]</span><br><span class="line"></span><br><span class="line">linear = linear_model.LinearRegression()</span><br><span class="line">linear.fit(positional_rating, point)</span><br><span class="line">print(&quot;The coefficients of linear regression is: \n&quot;, linear.coef_, linear.intercept_)</span><br><span class="line">linear_pred = linear.predict(positional_rating)</span><br><span class="line">linear_error = metrics.mean_squared_error(point, linear_pred)</span><br><span class="line"></span><br><span class="line">lasso = linear_model.Lasso(alpha = 0.05)</span><br><span class="line">lasso.fit(positional_rating, point)</span><br><span class="line">print(&quot;The coefficients of LASSO is: \n&quot;, lasso.coef_, lasso.intercept_)</span><br><span class="line">lasso_pred = lasso.predict(positional_rating)</span><br><span class="line">lasso_error = metrics.mean_squared_error(point, lasso_pred)</span><br><span class="line"></span><br><span class="line">ridge = linear_model.Ridge(alpha = 0.05)</span><br><span class="line">ridge.fit(positional_rating, point)</span><br><span class="line">print(&quot;The coefficients of ridge regression is: \n&quot;, ridge.coef_, ridge.intercept_)</span><br><span class="line">ridge_pred = ridge.predict(positional_rating)</span><br><span class="line">ridge_error = metrics.mean_squared_error(point, ridge_pred)</span><br><span class="line"></span><br><span class="line">plt.scatter(range(len(point)), linear_pred, c=&quot;b&quot;, s=5, label = &quot;RMSE = &#123;&#125;&quot;.format(linear_error))</span><br><span class="line">plt.scatter(range(len(point)), lasso_pred, c=&quot;g&quot;, s=5, label = &quot;RMSE = &#123;&#125;&quot;.format(lasso_error))</span><br><span class="line">plt.scatter(range(len(point)), ridge_pred, c=&quot;r&quot;, s=5, label = &quot;RMSE = &#123;&#125;&quot;.format(ridge_error))</span><br><span class="line">plt.legend()</span><br><span class="line">plt.title(&quot;Multivariate Linear Regression with Regularization&quot;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>所得系数结果如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">The coefficients of linear regression is: </span><br><span class="line"> [-0.21123266  1.57223726  0.55099646  0.53368376] -15.530602996552473</span><br><span class="line">The coefficients of LASSO is: </span><br><span class="line"> [0.         0.         0.14278881 0.74503449] -4.756272103162484</span><br><span class="line">The coefficients of ridge regression is: </span><br><span class="line"> [0.02804539 1.15815936 0.65716007 0.56690047] -15.232251377010472</span><br></pre></td></tr></table></figure>
+
+<p>线性系数的变化直观地体现出两种正则化的不同效果。在未经正则化的多元线性回归中，第一个系数比较反直觉，为负，因为它意味着门将的表现对球队积分起到的是负作用，这种结论明显不合常理。</p>
+<p>这个问题在两种正则化操作中都得以解决。</p>
+<p>LASSO 将 4 个特征中 2 个的系数缩减为 0，这意味着一半的特征被淘汰掉了，其中就包括倒霉的守门员。在 LASSO 看来，对比赛做出贡献的只有中场和前锋球员，而中场的作用又远远不及前锋——这样的结果是否是对英超注重进攻的直观印象的佐证呢？</p>
+<p>和 LASSO 相比，岭回归保留了所有的特征，并给门将的表现赋予了接近于 0 的权重系数，以削弱它对结果的影响，其它的权重系数也和原始多元回归的结果更加接近。但 LASSO 和岭回归的均方误差都高于普通线性回归的均方误差，LASSO 的性能还要劣于岭回归的性能，这是抑制过拟合和降低误差必然的结果。</p>
+<p>比较岭回归和LASSO回归的使用场景：</p>
+<p>当参数的数目远远大于样本的数目的高维统计问题，并且参数的选择比较简单粗暴，其中有不少参数存在相关性时，比较建议用LASSO回归来降低参数数目。这样处理后才能做矩阵求逆运算。</p>
+<p>LASSO回归会让很多参数的系数变成零，只保留一部分参数，一般是保留系数最大的，系数小的因子很可能是噪音。参数取值的幅度有可能不一样，比如有的参数是-1到1，有的是-10到10，那么系数也会受影响。因此，在使用LASSO之前，需要对参数的取值幅度进行调整，这样计算出来的系数才具有可比性。</p>
+<p><strong>当样本数远大于参数的数目时</strong>，岭回归计算更快。如果参数数量少而精，数值都调整好，偏度、峰度、正态化、去极值等等，而且普遍适用多种场景，参数可解释，这时比较适合用岭回归。</p>
+<p>岭回归不会删除参数，会对参数的取值幅度进行压缩。特征值小的特征向量会被压缩得最厉害，因此，它也要求参数取值幅度最好差不多，这样系数差不多，压缩起来才更有意义。</p>
+
+                    
+                    <!-- Tags Bottom -->
+                    
+
+                    <!-- Comments -->
+                    
+
+
+
+                </div>
+                <div class="fl w-100 w-30-l center fw3 lh-copy pl4-ns tl black-50">
+                    
+                    <hr class="dn-l mw4 black-50 mt5" />
+                    
+                    <!-- Widget 1: About -->
+                    <div class="mt5 mt0-l">
+    <article class="dt db-l mw8 mw8-m mw5-ns center ml0-l bg-white mv3">
+        <div class="dn dtc-m db-l v-mid tc pr4 pr0-l" style="min-width: 6rem;">
+            <img src="http://tachyons.io/img/avatar_1.jpg" class="mb4-l br-100 h3 w3 h4-l w4-l dib" title="John Doe">
+        </div>
+        <div class="dtc db-l v-mid lh-copy measure center f6 black-50 tj">
+            My name is Alvin Qin and this is my blog.<br>I am a data mining  engineer with a strong front-end focus.<br>
+        </div>
+    </article>
+</div>
+
+                    <hr class="dn-l mw4 black-50 mt5" />
+                    
+                    <!-- Widget 2: Categories -->
+                    
+
+                    <!-- Widget 3: Recent Posts -->
+                    <div class="mt5 tc tl-l">
+    <h3>Recent Posts</h3>
+    
+        <p>
+            <a href="/2019/01/20/plot2/">利用Python进行数据可视化（2）</a>
+        </p>
+    
+        <p>
+            <a href="/2018/12/27/plot1/">利用Python进行数据可视化（1）</a>
+        </p>
+    
+        <p>
+            <a href="/2018/11/15/linear/">线性回归的正则化</a>
+        </p>
+    
+        <p>
+            <a href="/2018/10/20/userpotrait/">对数据标签化的认识</a>
+        </p>
+    
+        <p>
+            <a href="/2018/09/10/credit-default/">信用卡违约率的实战分析模型</a>
+        </p>
+    
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Footer -->
+<div class="bg-1 ph2 ph5-ns pv5">
+        <div class="mv8">
+            <div class="center tc">
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://twitter.com/?lang=en" target="_blank">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://www.facebook.com/" target="_blank">
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://dribbble.com/" target="_blank">
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://github.com/klugjo/hexo-theme-anodyne" target="_blank">
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://plus.google.com/" target="_blank">
+                            <i class="fa fa-google-plus"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://www.behance.net/" target="_blank">
+                            <i class="fa fa-behance"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://500px.com/" target="_blank">
+                            <i class="fa fa-500px"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="mailto:test@example.com" target="_blank">
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="/#" target="_blank">
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </div>
+                
+            </div>
+            <div class="f6 f5-ns center tc white pt5 fw3">
+                @Untitled. All right reserved | Design & Hexo <a class="link dim white" href="http://www.codeblocq.com/">Jonathan Klughertz</a>
+            </div>
+        </div>
+    </div>
+
+<!-- After Footer -->
+<!-- Disqus Comments -->
+
+
+
+</body>
+
+</html>
