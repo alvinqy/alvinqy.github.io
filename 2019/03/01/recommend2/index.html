@@ -10,10 +10,9 @@
 
     <!--Description-->
     
-        <meta name="description" content="title: 推荐算法的一些理解date: 2019-03-01tags:
-看到这篇文章，关于推荐算法阐述得比较清楚，现转载如下：
+        <meta name="description" content="看到这篇文章，关于推荐算法阐述得比较清楚，现转载如下：
 https://blog.csdn.net/v_JULY_v/article/details/7184318
-1、推荐引擎原理推荐引擎尽最大努力的收集尽可能多的用户信息">
+1、推荐引擎原理推荐引擎尽最大努力的收集尽可能多的用户信息及行为，所谓广撒网，勤捕鱼，然后“特别的爱给特别的你”，最后基于相似性的基础">
     
 
     <!--Author-->
@@ -23,7 +22,7 @@ https://blog.csdn.net/v_JULY_v/article/details/7184318
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="Hexo">
+        <meta property="og:title" content="推荐算法的一些理解">
     
 
     <!--Open Graph Description-->
@@ -34,7 +33,7 @@ https://blog.csdn.net/v_JULY_v/article/details/7184318
 
     <!--Type page-->
     
-        <meta property="og:type" content="website">
+        <meta property="og:type" content="article">
     
 
     <!--Page Cover-->
@@ -45,7 +44,7 @@ https://blog.csdn.net/v_JULY_v/article/details/7184318
 
     <!-- Title -->
     
-    <title>Hexo</title>
+    <title>推荐算法的一些理解 - Hexo</title>
 
     <!-- Tachyons Core CSS -->
     <link rel="stylesheet" href="https://unpkg.com/tachyons/css/tachyons.min.css">
@@ -113,8 +112,8 @@ https://blog.csdn.net/v_JULY_v/article/details/7184318
     <!-- Title -->
     <div class="w-100 mw8 center vh-40 dt">
         <div class="dtc v-mid white">
-            <h1 class="f1-l f2-m tc tc-m tl-ns">Untitled</h1>
-            <p class="f4 fw3 pab-100px tc tc-m tl-ns">2019-08-02</p>
+            <h1 class="f1-l f2-m tc tc-m tl-ns">推荐算法的一些理解</h1>
+            <p class="f4 fw3 pab-100px tc tc-m tl-ns">2019-03-01</p>
         </div>
     </div>
 
@@ -134,11 +133,12 @@ https://blog.csdn.net/v_JULY_v/article/details/7184318
                     
 
                     <!-- Main Post Content -->
-                    <p>title: 推荐算法的一些理解<br>date: 2019-03-01<br>tags:</p>
-<p>看到这篇文章，关于推荐算法阐述得比较清楚，现转载如下：</p>
+                    <p>看到这篇文章，关于推荐算法阐述得比较清楚，现转载如下：</p>
 <p><a href="https://blog.csdn.net/v_JULY_v/article/details/7184318" target="_blank" rel="noopener">https://blog.csdn.net/v_JULY_v/article/details/7184318</a></p>
 <h1 id="1、推荐引擎原理"><a href="#1、推荐引擎原理" class="headerlink" title="1、推荐引擎原理"></a>1、推荐引擎原理</h1><p>推荐引擎尽最大努力的收集尽可能多的用户信息及行为，所谓广撒网，勤捕鱼，然后“特别的爱给特别的你”，最后基于相似性的基础之上持续“给力”，原理如下图所示（图引自本文的参考资料之一：探索推荐引擎内部的秘密）：</p>
-<p><img src="/2019/08/02/recommend/1564734147095.png" alt="1564734147095"></p>
+<blockquote>
+<p><img src="/2019/03/01/recommend2/1564747993825.png" alt="1564747993825"></p>
+</blockquote>
 <h1 id="2、推荐引擎的分类"><a href="#2、推荐引擎的分类" class="headerlink" title="2、推荐引擎的分类"></a>2、推荐引擎的分类</h1><p>2、推荐引擎的分类<br>     推荐引擎根据不同依据如下分类：</p>
 <ol>
 <li>根据其是不是为不同的用户推荐不同的数据，分为基于大众行为（网站管理员自行推荐，或者基于系统所有用户的反馈统计计算出的当下比较流行的物品）、及个性化推荐引擎（帮你找志同道合，趣味相投的朋友，然后在此基础上实行推荐）；</li>
@@ -165,16 +165,16 @@ https://blog.csdn.net/v_JULY_v/article/details/7184318
 <blockquote>
 <blockquote>
 </blockquote>
-<p><img src="/2019/08/02/recommend/1564743505711.png" alt="1564743505711"></p>
+<p><img src="/2019/03/01/recommend2/1564748049609.png" alt="1564748049609"></p>
 </blockquote>
 </blockquote>
 <p>不过，上述不论是基于用户的推荐方式，还是基于大众行为的推荐都并没有真正寻找到用户与用户之间共同的兴趣，偏好和口味，因为很多的时候，朋友的朋友不一定能成为你自己的朋友，且有的人清高于世，你们都追求的，我偏不屑。所以，从分析用户发表的微博的内容相关入手，找到各自共同的关注点、兴趣点才是王道。当然新浪微博最近让用户选择给自己发表的微博内容打上标签，以利于日后寻找微博内容中相关用户共同的标签tag，关键词，此种推荐方式正是基于微博内容分析的推荐。如下图：</p>
 <blockquote>
-<p><img src="/2019/08/02/recommend/1564743659819.png" alt="1564743659819"></p>
+<p><img src="/2019/03/01/recommend2/1564748083204.png" alt="1564748083204"></p>
 </blockquote>
 <p>只是问题是，谁会不遗余力发完微博后，还去给它添加什么标签呢？所以，新浪微博还得努力，寻找另一种更好地分析微博内容的方式。不然系统全盘扫描海里用户的海量微博内容，则恐怕吃不消也负担不起。<br>然个人觉得倒是可以从微博关键词（标签tag云）和每个用户为自己打的标签（打着越多的共同标签可定义为相似用户）入手，如下图左右部分所示：</p>
 <blockquote>
-<p><img src="/2019/08/02/recommend/1564743771831.png" alt="1564743771831"></p>
+<p><img src="/2019/03/01/recommend2/1564748110062.png" alt="1564748110062"></p>
 </blockquote>
 <p>也就是说，通过共同的好友和通过间接关注的人来定义相似用户是不靠谱的，只有通过基于微博内容的分析寻找相似用户才是可行之道，同时，更进一步，通过微博内容分析得到标签tag云后，再从中找到相同或相近的标签tag云寻找相似的用户无疑比已有推荐好友方式（通过共同的好友和通过间接关注的人来定义相似用户）更靠谱。</p>
 <p>3.1、多种推荐方式结合</p>
@@ -182,7 +182,7 @@ https://blog.csdn.net/v_JULY_v/article/details/7184318
 <p>  举个例子如Amazon中除此基于用户的推荐之外，还会用到基于内容的推荐(物品具有相同关键词和Tag)：如新产品的推荐；基于项目的协同过滤推荐(喜欢A，C与A类似，可能也喜欢C)：如捆绑销售and别人购买/浏览的商品。</p>
 <p> 总之，多种推荐方式结合，加权（用线性公式（linear formula）将几种不同的推荐按照一定权重组合起来，具体权重的值需要在测试数据集上反复实验，从而达到最好的推荐效果。）、切换、分区、分层等混合。但不论是哪种推荐方式，一般也就涵盖在上文所述的推荐方式中。</p>
 <h1 id="4、协同过滤推荐"><a href="#4、协同过滤推荐" class="headerlink" title="4、协同过滤推荐"></a>4、协同过滤推荐</h1><p>协同过滤是利用集体智慧的一个典型方法。要理解什么是协同过滤 (Collaborative Filtering, 简称 CF)，首先想一个简单的问题，如果你现在想看个电影，但你不知道具体看哪部，你会怎么做？大部分的人会问问周围的朋友或者称之为广义上的邻居(neighborhood)，看看最近有什么好看的电影推荐，而我们一般更倾向于从口味比较类似的朋友那里得到推荐。这就是协同过滤的核心思想。如下图，你能从图中看到多少信息？</p>
-<p><img src="/2019/08/02/recommend/1564744053549.png" alt="1564744053549"></p>
+<p><img src="/2019/03/01/recommend2/1564748135637.png" alt="1564748135637"></p>
 <p>做协同过滤推荐，一般要做好以下几个步骤：</p>
 <p>1）若要做协同过滤，那么收集用户偏好则成了关键。可以通过用户的行为诸如评分（如不同的用户对不同的作品有不同的评分，而评分接近则意味着喜好口味相近，便可判定为相似用户），投票，转发，保存，书签，标记，评论，点击流，页面停留时间，是否购买等获得。如下面第2点所述：所有这些信息都可以数字化，如一个二维矩阵表示出来。</p>
 <p>2）收集了用户行为数据之后，我们接下来便要对数据进行减噪与归一化操作(得到一个用户偏好的二维矩阵，一维是用户列表，另一维是物品列表，值是用户对物品的偏好，一般是 [0,1] 或者 [-1, 1] 的浮点数值)。下面再简单介绍下减噪和归一化操作：</p>
@@ -194,7 +194,7 @@ https://blog.csdn.net/v_JULY_v/article/details/7184318
 <p>4）相似度的计算有多种方法，不过都是基于向量Vector的，其实也就是计算两个向量的距离，距离越近相似度越大。在推荐中，用户-物品偏好的二维矩阵下，我们将某个或某几个用户对莫两个物品的偏好作为一个向量来计算两个物品之间的相似度，或者将两个用户对某个或某几个物品的偏好作为一个向量来计算两个用户之间的相似度。</p>
 <p>相似度计算算法可以用于计算用户或者项目相似度。以项目相似度计算（Item Similarity Computation）为列，通性在于都是从评分矩阵中，为两个项目i，j挑选出共同的评分用户，然对这个共同用户的评分向量，进行计算相似度si,j，如下图所示，行代表用户，列代表项目(注意到是从i，j向量中抽出共有的评论，组成的一对向量，进行相似度计算)：</p>
 <blockquote>
-<p><img src="/2019/08/02/recommend/1564745868523.png" alt="1564745868523"></p>
+<p><img src="/2019/03/01/recommend2/1564748166838.png" alt="1564748166838"></p>
 </blockquote>
 <p>所以说，很简单，找物品间的相似度，用户不变，找多个用户对物品的评分；找用户间的相似度，物品不变，找用户对某些个物品的评分。</p>
 <p>5）而计算出来的这两个相似度则将作为基于用户、项目的两项协同过滤的推荐。</p>
@@ -203,7 +203,7 @@ https://blog.csdn.net/v_JULY_v/article/details/7184318
 欧几里德距离（Euclidean Distance）是最初用于计算欧几里德空间中两个点的距离，假设 x，y 是 n 维空间的两个点，它们之间的欧几里德距离是：</code></pre><blockquote>
 <blockquote>
 </blockquote>
-<p><img src="/2019/08/02/recommend/1564746957969.png" alt="1564746957969"></p>
+<p><img src="/2019/03/01/recommend2/1564748187475.png" alt="1564748187475"></p>
 </blockquote>
 
                     
@@ -242,11 +242,11 @@ https://blog.csdn.net/v_JULY_v/article/details/7184318
     <h3>Recent Posts</h3>
     
         <p>
-            <a href="/2019/08/02/recommend/">Untitled</a>
+            <a href="/2019/05/30/resume/">resume</a>
         </p>
     
         <p>
-            <a href="/2019/05/30/resume/">resume</a>
+            <a href="/2019/03/01/recommend2/">推荐算法的一些理解</a>
         </p>
     
         <p>
